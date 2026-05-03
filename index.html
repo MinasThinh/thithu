@@ -3,7 +3,9 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Phiếu Trả Lời 2.0.0</title>
+<title>Phiếu Trả Lời 2.0.1</title>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Noto+Serif:wght@400;500&display=swap" rel="stylesheet">
 <style>
 :root{
@@ -232,8 +234,7 @@ main{max-width:1400px;margin:0 auto;padding:28px 22px 110px}
 .font-size-row input[type=range]{flex:1;accent-color:var(--accent)}
 
 /* TOAST */
-.toast{position:fixed;top:68px;right:18px;background:var(--text);color:var(--surface);padding:10px 16px;border-radius:var(--r);font-size:13px;opacity:0;transform:translateY(-6px);pointer-events:none;transition:all .2s;z-index:600}
-.toast.show{opacity:1;transform:translateY(0)}
+/* toast handled by Bootstrap */
 
 @keyframes fadeUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
 .anim{animation:fadeUp .3s ease both}
@@ -544,7 +545,6 @@ main{max-width:1400px;margin:0 auto;padding:28px 22px 110px}
   </div>
 </div>
 
-<div class="toast" id="toast"></div>
 
 <div class="modal-bg" id="del-modal">
   <div class="modal">
@@ -621,8 +621,8 @@ async function doRegister(){
   document.getElementById('l-username').value=uname;
 }
 
-function doLogout(){
-  if(!confirm('Đăng xuất?'))return;
+async function doLogout(){
+  if(!await bsConfirm('Đăng xuất','Bạn có chắc muốn đăng xuất?','Đăng xuất','btn-dark'))return;
   currentUser=null;
   try{localStorage.removeItem('session');}catch(e){}
   location.reload();
@@ -634,7 +634,7 @@ function onLoginSuccess(){
   loadAll();
   renderExamList();
   loadGhConfig();
-  showToast('Chào ' + currentUser.fullname + '!');
+  showToastSuccess('Chào ' + currentUser.fullname + '!');
 }
 
 function applyRoleUI(){
@@ -728,31 +728,31 @@ async function ghPullExams(){
     let count=0;
     for(const id in data){const ex=data[id];if(!ex.cfg||!ex.key||!ex.scoring||!ex.name)throw new Error(`Đề "${id}" thiếu trường`);count++;}
     Object.assign(exams,data);saveAll();renderExamList();
-    setGhStatus(`✓ Đã tải ${count} đề`,'ok');showToast('Đã tải từ GitHub!');
-  }catch(e){setGhStatus('Lỗi: '+e.message.slice(0,36),'err');showToast('❌ '+e.message.slice(0,80));}
+    setGhStatus(`✓ Đã tải ${count} đề`,'ok');showToastSuccess('Đã tải từ GitHub!');
+  }catch(e){setGhStatus('Lỗi: '+e.message.slice(0,36),'err');showToastErr(e.message.slice(0,80));}
 }
 async function ghPushExams(){
   setGhStatus('Đang lưu...','loading');
   try{
     const c=getGhCfg();
     await ghPut(c.path||'exams.json',exams,null,`Update exams — ${new Date().toLocaleString('vi-VN')}`);
-    setGhStatus('✓ Đã lưu đề thi','ok');showToast('Đã lưu đề thi lên GitHub!');
-  }catch(e){setGhStatus('Lỗi: '+e.message.slice(0,36),'err');showToast('❌ '+e.message.slice(0,80));}
+    setGhStatus('✓ Đã lưu đề thi','ok');showToastSuccess('Đã lưu đề thi lên GitHub!');
+  }catch(e){setGhStatus('Lỗi: '+e.message.slice(0,36),'err');showToastErr(e.message.slice(0,80));}
 }
 async function ghPullUsers(){
   try{
     const c=getGhCfg();
     const{data}=await ghFetch(c.usersPath||'users.json');
     users=data; saveUsersLocal(); renderUsersTable();
-    showToast('Đã tải danh sách người dùng!');
-  }catch(e){showToast('❌ '+e.message.slice(0,80));}
+    showToastSuccess('Đã tải danh sách người dùng!');
+  }catch(e){showToastErr(e.message.slice(0,80));}
 }
 async function ghPushUsers(){
   try{
     const c=getGhCfg();
     await ghPut(c.usersPath||'users.json',users,null,`Update users — ${new Date().toLocaleString('vi-VN')}`);
-    showToast('Đã lưu danh sách người dùng lên GitHub!');
-  }catch(e){showToast('❌ '+e.message.slice(0,80));}
+    showToastSuccess('Đã lưu người dùng lên GitHub!');
+  }catch(e){showToastErr(e.message.slice(0,80));}
 }
 async function tryLoadUsersFromGH(){
   try{
@@ -791,19 +791,65 @@ function renderUsersTable(){
 }
 function changeUserRole(uname,role){
   if(!users[uname])return;
-  users[uname].role=role; saveUsersLocal();
-  showToast(`Đã đổi role ${uname} → ${role}`);
+  users[uname].role=role;
+  saveUsersLocal(); // triggers debounced GitHub push
+  // If changing self: update session + UI instantly, no logout needed
+  if(uname===currentUser?.username){
+    currentUser.role=role;
+    try{localStorage.setItem('session',JSON.stringify(currentUser));}catch(e){}
+    applyRoleUI();
+  }
+  showToastSuccess(`Đã đổi role ${uname} → ${role}`);
 }
-function deleteUser(uname){
-  if(!confirm(`Xoá tài khoản "${uname}"?`))return;
+async function deleteUser(uname){
+  if(!await bsConfirm('Xoá tài khoản?',`Xoá "${uname}" — không thể hoàn tác.`,'Xoá','btn btn-danger'))return;
   delete users[uname]; saveUsersLocal(); renderUsersTable();
   showToast('Đã xoá tài khoản.');
 }
 
 /* ════════ LOCAL PERSISTENCE ════════ */
-function saveAll(){try{localStorage.setItem('phanmem_exams',JSON.stringify(exams));}catch(e){}}
+function saveAll(){
+  try{localStorage.setItem('phanmem_exams',JSON.stringify(exams));}catch(e){}
+  scheduleSyncExams();
+}
 function loadAll(){try{const r=localStorage.getItem('phanmem_exams');if(r)exams=JSON.parse(r);}catch(e){exams={};}}
-function saveUsersLocal(){try{localStorage.setItem('phanmem_users',JSON.stringify(users));}catch(e){}}
+function saveUsersLocal(){
+  try{localStorage.setItem('phanmem_users',JSON.stringify(users));}catch(e){}
+  scheduleSyncUsers();
+}
+
+/* ─ Debounced sync ─ */
+let _syncExamsTimer=null, _syncUsersTimer=null;
+function setSyncIndicator(msg,ok){
+  const el=document.getElementById('sync-indicator');
+  el.textContent=msg; el.style.display='block';
+  el.style.color=ok===true?'var(--green)':ok===false?'var(--red)':'var(--muted)';
+  el.style.borderColor=ok===true?'var(--green-bd)':ok===false?'var(--red-bd)':'var(--border)';
+  if(ok!==null)setTimeout(()=>{el.style.display='none';},3000);
+}
+function scheduleSyncExams(){
+  const c=getGhCfg(); if(!c.token||!c.repo)return;
+  clearTimeout(_syncExamsTimer);
+  setSyncIndicator('⏳ Chờ lưu…',null);
+  _syncExamsTimer=setTimeout(async()=>{
+    setSyncIndicator('⬆ Đang lưu đề thi…',null);
+    try{
+      await ghPut(c.path||'exams.json',exams,null,`Auto-sync exams ${new Date().toLocaleTimeString('vi-VN')}`);
+      setSyncIndicator('✓ Đề thi đã lưu',true);
+      setGhStatus('✓ Auto-sync','ok');
+    }catch(e){setSyncIndicator('✗ Lỗi lưu: '+e.message.slice(0,30),false);setGhStatus('Lỗi sync','err');}
+  },3000);
+}
+function scheduleSyncUsers(){
+  const c=getGhCfg(); if(!c.token||!c.repo)return;
+  clearTimeout(_syncUsersTimer);
+  _syncUsersTimer=setTimeout(async()=>{
+    try{
+      await ghPut(c.usersPath||'users.json',users,null,`Auto-sync users ${new Date().toLocaleTimeString('vi-VN')}`);
+      setSyncIndicator('✓ Người dùng đã lưu',true);
+    }catch(e){setSyncIndicator('✗ Lỗi lưu users',false);}
+  },3000);
+}
 function loadUsersLocal(){
   try{const r=localStorage.getItem('phanmem_users');if(r){users=JSON.parse(r);return;}}catch(e){}
   users={};
@@ -821,7 +867,7 @@ function exportAllExams(){
   const blob=new Blob([JSON.stringify(exams,null,2)],{type:'application/json'});
   const url=URL.createObjectURL(blob);const a=document.createElement('a');
   a.href=url;a.download='de-thi-'+new Date().toISOString().slice(0,10)+'.json';a.click();
-  URL.revokeObjectURL(url);showToast('Đã lưu file!');
+  URL.revokeObjectURL(url);showToastSuccess('Đã lưu file!');
 }
 function importExams(){
   const inp=document.createElement('input');inp.type='file';inp.accept='.json';
@@ -834,8 +880,8 @@ function importExams(){
         if(typeof data!=='object'||Array.isArray(data))throw new Error('File phải là JSON object');
         let count=0;
         for(const id in data){const ex=data[id];if(!ex.cfg||!ex.key||!ex.scoring||!ex.name)throw new Error(`Đề "${id}" thiếu trường`);count++;}
-        Object.assign(exams,data);saveAll();renderExamList();showToast('Đã tải '+count+' đề!');
-      }catch(err){showToast('❌ '+err.message);}
+        Object.assign(exams,data);saveAll();renderExamList();showToastSuccess('Đã tải '+count+' đề!');
+      }catch(err){showToastErr(err.message);}
     };
     r.readAsText(f);
   };
@@ -846,8 +892,8 @@ function importExams(){
 function switchTab(tab,btn){
   // Guard: student can't access creator/admin
   const r=currentUser?.role;
-  if(tab==='creator'&&r==='student'){showToast('Bạn không có quyền truy cập.');return;}
-  if(tab==='admin'&&r!=='admin'){showToast('Chỉ Admin mới có quyền truy cập.');return;}
+  if(tab==='creator'&&r==='student'){showToastErr('Không có quyền truy cập.');return;}
+  if(tab==='admin'&&r!=='admin'){showToastErr('Chỉ Admin mới có quyền truy cập.');return;}
   document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
   document.querySelectorAll('.htab').forEach(b=>b.classList.remove('active'));
   document.getElementById('panel-'+tab).classList.add('active');
@@ -891,7 +937,7 @@ function renderExamList(){
 }
 
 function newExam(){
-  if(currentUser?.role==='student'){showToast('Không có quyền.');return;}
+  if(currentUser?.role==='student'){showToastErr('Không có quyền truy cập.');return;}
   editingExamId=null;
   document.getElementById('ex-name').value='';
   document.getElementById('ex-tn').value=12;
@@ -903,7 +949,7 @@ function newExam(){
   switchTab('creator',document.getElementById('tab-creator-btn'));
 }
 function editExam(id){
-  if(currentUser?.role==='student'){showToast('Không có quyền.');return;}
+  if(currentUser?.role==='student'){showToastErr('Không có quyền truy cập.');return;}
   editingExamId=id;const ex=exams[id];
   document.getElementById('ex-name').value=ex.name;
   document.getElementById('ex-url').value=ex.examUrl||'';
@@ -924,8 +970,8 @@ function editExam(id){
   }
   switchTab('creator',document.getElementById('tab-creator-btn'));
 }
-function askDelete(id){deleteTargetId=id;document.getElementById('del-modal').classList.add('open');}
-function confirmDelete(){if(deleteTargetId){delete exams[deleteTargetId];saveAll();renderExamList();}closeModal('del-modal');showToast('Đã xoá.');}
+async function askDelete(id){if(!await bsConfirm('Xoá đề thi?','Hành động này không thể hoàn tác.','Xoá','btn btn-danger'))return;delete exams[id];saveAll();renderExamList();showToastSuccess('Đã xoá đề thi.');}
+function confirmDelete(){if(deleteTargetId){delete exams[deleteTargetId];saveAll();renderExamList();}closeModal('del-modal');showToastSuccess('Đã xoá đề thi.');}
 function closeModal(id){document.getElementById(id).classList.remove('open');}
 
 /* ════════ CREATOR ════════ */
@@ -933,7 +979,7 @@ function initCreator(){
   const tn=Math.max(0,parseInt(document.getElementById('ex-tn').value)||0);
   const ds=Math.max(0,parseInt(document.getElementById('ex-ds').value)||0);
   const tln=Math.max(0,parseInt(document.getElementById('ex-tln').value)||0);
-  if(tn+ds+tln===0){showToast('Nhập ít nhất 1 câu.');return;}
+  if(tn+ds+tln===0){showToastErr('Nhập ít nhất 1 câu.');return;}
   buildKeyInputs(tn,ds,tln);
   document.getElementById('creator-key-area').style.display='block';
   document.getElementById('sc-tn-row').style.display=tn>0?'':'none';
@@ -979,20 +1025,20 @@ function restoreCreatorKeyUI(){
   for(const q in creatorKey.ds){for(const s in creatorKey.ds[q]){const val=creatorKey.ds[q][s];const items=document.querySelectorAll('#key-ds-sec .ds-item');const item=items[parseInt(q)-1];if(!item)continue;const row=item.querySelectorAll('.ds-row')[parseInt(s)-1];if(!row)continue;row.querySelectorAll('.dsbtn').forEach(b=>{if((val==='D'&&b.textContent==='Đ')||(val==='S'&&b.textContent==='S'))b.classList.add(val==='D'?'dung':'sai');});}}
   const tlnInputs=document.querySelectorAll('#key-tln-sec .tlninput');for(const q in creatorKey.tln){const inp=tlnInputs[parseInt(q)-1];if(inp){inp.value=creatorKey.tln[q];inp.classList.add('has-val');}}
 }
-function finalizeExam(){
+async function finalizeExam(){
   const tn=parseInt(document.getElementById('ex-tn').value)||0;
   const ds=parseInt(document.getElementById('ex-ds').value)||0;
   const tln=parseInt(document.getElementById('ex-tln').value)||0;
   const total=tn+ds*4+tln;
   const filled=Object.keys(creatorKey.tn).length+Object.values(creatorKey.ds).reduce((a,v)=>a+Object.keys(v).length,0)+Object.keys(creatorKey.tln).length;
-  if(filled<total&&!confirm(`Còn ${total-filled} ô chưa điền. Vẫn lưu?`))return;
+  if(filled<total&&!await bsConfirm('Còn ô trống',`${total-filled} ô đáp án chưa điền.`,'Vẫn lưu','btn-dark'))return;
   const name=document.getElementById('ex-name').value.trim()||'Đề thi';
   const id=editingExamId||('ex_'+Date.now());
   const examUrl=document.getElementById('ex-url').value.trim();
   exams[id]={id,name,examUrl,cfg:{tn,ds,tln},key:JSON.parse(JSON.stringify(creatorKey)),scoring:getScoring(),scoringMode};
   saveAll();renderExamList();
   document.getElementById('creator-key-area').style.display='none';
-  showToast(editingExamId?'Đã cập nhật!':'Đề thi đã tạo xong!');
+  showToastSuccess(editingExamId?'Đã cập nhật!':'Đề thi đã tạo xong!');
   editingExamId=null;
   switchTab('exams',document.getElementById('tab-exams-btn'));
 }
@@ -1065,7 +1111,7 @@ function buildSheetTLN(tnN,dsN,n,sc){
 function handleTLN(q,input){if(submitted)return;let val=input.value;const m=val.startsWith('-');val=(m?'-':'')+val.replace(/[^0-9,]/g,'');if((val.match(/,/g)||[]).length>1){input.value=sheet.tln[q]||'';return;}if(val.length>5)val=val.slice(0,5);input.value=val;sheet.tln[q]=val;input.classList.toggle('has-val',val.length>0);updateProgress();}
 function countAnswered(){const ex=exams[currentExamId];if(!ex)return{done:0,total:0};const{cfg}=ex;const total=cfg.tn+cfg.ds*4+cfg.tln;let done=Object.keys(sheet.tn).length;for(const q in sheet.ds)done+=Object.keys(sheet.ds[q]).length;for(const q in sheet.tln)if(sheet.tln[q])done++;return{done,total};}
 function updateProgress(){const{done,total}=countAnswered();const pct=total===0?0:Math.round(done/total*100);document.getElementById('prog-fill').style.width=pct+'%';document.getElementById('prog-lbl').textContent=done+' / '+total;document.getElementById('hp-done').textContent=done;document.getElementById('hp-total').textContent=total;}
-function submitExam(){const{done,total}=countAnswered();if(done<total&&!confirm(`Còn ${total-done} câu chưa trả lời. Nộp bài?`))return;submitted=true;grade();}
+async function submitExam(){const{done,total}=countAnswered();if(done<total&&!await bsConfirm('Nộp bài?',`Còn ${total-done} câu chưa trả lời.`,'Nộp bài','btn-dark'))return;submitted=true;grade();}
 function grade(){
   const ex=exams[currentExamId];const{cfg,key,scoring}=ex;let sTN=0,sDS=0,sTLN=0;
   for(let i=1;i<=cfg.tn;i++){const ok=sheet.tn[i]===key.tn[i];if(ok)sTN+=scoring.tn;const item=document.getElementById(`tn-item-${i}`);if(!item)continue;item.classList.remove('answered');item.querySelectorAll('.cbtn').forEach(b=>{b.disabled=true;if(b.textContent===key.tn[i])b.classList.add('key-ans');if(b.textContent===sheet.tn[i]&&sheet.tn[i]!==key.tn[i])b.classList.add('wrong-pick');});if(key.tn[i])item.classList.add(ok?'correct':'wrong');const badge=document.createElement('div');badge.className='qbadge '+(ok?'ok':'no');badge.textContent=ok?`+${fmt(scoring.tn)}đ`:(key.tn[i]?`→ ${key.tn[i]}`:'—');item.appendChild(badge);}
@@ -1082,8 +1128,8 @@ function grade(){
   try{localStorage.setItem('result_'+currentUser.username+'_'+currentExamId,JSON.stringify({total,sTN,sDS,sTLN,maxTotal,at:new Date().toISOString()}));}catch(e){}
   renderExamList();
 }
-function retakeExam(){if(!currentExamId)return;if(!confirm('Xóa bài làm và làm lại?'))return;selectExamAndStart(currentExamId);}
-function saveSheet(){try{localStorage.setItem('phanmem_sheet_'+currentExamId,JSON.stringify(sheet));showToast('Đã lưu bài làm!');}catch(e){showToast('Không thể lưu.');}}
+async function retakeExam(){if(!currentExamId)return;if(!await bsConfirm('Làm lại?','Toàn bộ đáp án đã nhập sẽ bị xoá.','Làm lại','btn-dark'))return;selectExamAndStart(currentExamId);}
+function saveSheet(){try{localStorage.setItem('phanmem_sheet_'+currentExamId,JSON.stringify(sheet));showToastSuccess('Đã lưu bài làm!');}catch(e){showToastErr('Không thể lưu.');}}
 function exportResult(){
   const ex=exams[currentExamId];if(!ex)return;const{cfg,key,scoring}=ex;const sc=lastScore||{};
   const lines=[`PHIẾU TRẢ LỜI — ${ex.name}`,'='.repeat(44),''];
@@ -1091,7 +1137,24 @@ function exportResult(){
   if(cfg.ds>0){lines.push('[ ĐÚNG – SAI ]');for(let i=1;i<=cfg.ds;i++){let c=0;for(let s=1;s<=4;s++)if(sheet.ds[i]&&sheet.ds[i][s]===(key.ds[i]&&key.ds[i][s]))c++;lines.push(`  Câu ${cfg.tn+i}: ${c}/4 đúng → +${fmt(scoring.ds[c]||0)}đ`);}lines.push(`  → ${fmt(+(sc.sDS||0).toFixed(2))}đ`,'');}
   if(cfg.tln>0){lines.push('[ TRẢ LỜI NGẮN ]');for(let i=1;i<=cfg.tln;i++){const ua=(sheet.tln[i]||'').trim(),ka=(key.tln[i]||'').trim(),ok=ka!==''&&ua===ka;lines.push(`  Câu ${String(cfg.tn+cfg.ds+i).padStart(2,'0')}: ${ua||'—'}  ${ok?'✓':'✗('+ka+')'}  ${ok?'+'+fmt(scoring.tln)+'đ':'0đ'}`);}lines.push(`  → ${fmt(+(sc.sTLN||0).toFixed(2))}đ`,'');}
   lines.push('='.repeat(44),`TỔNG: ${fmt(+(sc.total||0).toFixed(2))}đ / ${fmt(sc.maxTotal||0)}đ`,'',`Xuất: ${new Date().toLocaleString('vi-VN')}`);
-  const blob=new Blob([lines.join('\n')],{type:'text/plain;charset=utf-8'});const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download=`ket-qua-${new Date().toISOString().slice(0,10)}.txt`;a.click();URL.revokeObjectURL(url);showToast('Đã xuất kết quả!');
+  const blob=new Blob([lines.join('\n')],{type:'text/plain;charset=utf-8'});const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download=`ket-qua-${new Date().toISOString().slice(0,10)}.txt`;a.click();URL.revokeObjectURL(url);showToastSuccess('Đã xuất kết quả!');
+}
+
+/* ════════ BS CONFIRM ════════ */
+function bsConfirm(title, body, okLabel, okClass){
+  return new Promise(resolve=>{
+    document.getElementById('bs-confirm-title').textContent=title;
+    document.getElementById('bs-confirm-body').textContent=body;
+    const okBtn=document.getElementById('bs-confirm-ok');
+    okBtn.textContent=okLabel||'Xác nhận';
+    okBtn.className='btn '+(okClass||'btn-dark');
+    const modal=bootstrap.Modal.getOrCreateInstance(document.getElementById('bs-confirm-modal'));
+    const handler=()=>{modal.hide();resolve(true);};
+    const hideHandler=()=>{resolve(false);};
+    okBtn.onclick=handler;
+    document.getElementById('bs-confirm-modal').addEventListener('hidden.bs.modal',hideHandler,{once:true});
+    modal.show();
+  });
 }
 
 /* ════════ USER MENU ════════ */
@@ -1128,18 +1191,21 @@ async function saveProfile(){
   const fullname=document.getElementById('prof-fullname').value.trim();
   const pass=document.getElementById('prof-pass').value;
   const pass2=document.getElementById('prof-pass2').value;
-  if(!fullname){showToast('Họ tên không được để trống.');return;}
-  if(pass&&pass.length<6){showToast('Mật khẩu tối thiểu 6 ký tự.');return;}
-  if(pass&&pass!==pass2){showToast('Mật khẩu xác nhận không khớp.');return;}
-  if(!users[currentUser.username]){showToast('Lỗi: không tìm thấy tài khoản.');return;}
+  if(!fullname){showToastErr('Họ tên không được để trống.');return;}
+  if(pass&&pass.length<6){showToastErr('Mật khẩu tối thiểu 6 ký tự.');return;}
+  if(pass&&pass!==pass2){showToastErr('Mật khẩu xác nhận không khớp.');return;}
+  if(!users[currentUser.username]){showToastErr('Lỗi: không tìm thấy tài khoản.');return;}
+  // Update in-memory immediately
   users[currentUser.username].fullname=fullname;
   if(pass)users[currentUser.username].passwordHash=await sha256(pass);
   currentUser.fullname=fullname;
+  // Persist locally right away
   try{localStorage.setItem('session',JSON.stringify(currentUser));}catch(e){}
-  saveUsersLocal();
+  saveUsersLocal(); // triggers debounced GitHub push
   applyRoleUI();
   closeModal('profile-modal');
-  showToast('Đã cập nhật thông tin!');
+  renderExamList();
+  showToastSuccess('Đã cập nhật thông tin!');
 }
 
 /* ════════ SETTINGS ════════ */
@@ -1248,8 +1314,16 @@ function loadSettings(){
 /* ════════ HELPERS ════════ */
 function fmt(n){if(n===undefined||n===null)return'—';const r=+parseFloat(n).toFixed(2);return Number.isInteger(r)?String(r):String(r).replace('.',',');}
 function esc(s){const d=document.createElement('div');d.textContent=s;return d.innerHTML;}
-let toastTimer;
-function showToast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');clearTimeout(toastTimer);toastTimer=setTimeout(()=>t.classList.remove('show'),2600);}
+function showToast(msg,type='dark'){
+  const el=document.getElementById('bs-toast');
+  const body=document.getElementById('bs-toast-body');
+  body.textContent=msg;
+  el.className='toast align-items-center border-0 text-bg-'+type;
+  const t=bootstrap.Toast.getOrCreateInstance(el,{delay:2800});
+  t.show();
+}
+function showToastSuccess(msg){showToast(msg,'success');}
+function showToastErr(msg){showToast(msg,'danger');}
 
 /* ════════ INIT ════════ */
 window.addEventListener('DOMContentLoaded',async()=>{
@@ -1273,5 +1347,34 @@ window.addEventListener('DOMContentLoaded',async()=>{
   document.getElementById('login-overlay').style.display='flex';
 });
 </script>
+<!-- BS TOAST CONTAINER -->
+<div class="position-fixed top-0 end-0 p-3" style="z-index:9999">
+  <div id="bs-toast" class="toast align-items-center border-0" role="alert">
+    <div class="d-flex">
+      <div class="toast-body" id="bs-toast-body"></div>
+      <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
+    </div>
+  </div>
+</div>
+
+<!-- BS CONFIRM MODAL -->
+<div class="modal fade" id="bs-confirm-modal" tabindex="-1">
+  <div class="modal-dialog modal-dialog-centered modal-sm">
+    <div class="modal-content" style="border-radius:var(--rlg);border:1px solid var(--border);background:var(--surface)">
+      <div class="modal-body p-4">
+        <p class="fw-semibold mb-1" id="bs-confirm-title" style="font-size:16px;color:var(--text)"></p>
+        <p class="mb-3" id="bs-confirm-body" style="font-size:14px;color:var(--muted)"></p>
+        <div class="d-flex gap-2 justify-content-end">
+          <button class="btn btn-ghost" data-bs-dismiss="modal" id="bs-confirm-cancel">Huỷ</button>
+          <button class="btn" id="bs-confirm-ok">Xác nhận</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SYNC STATUS -->
+<div id="sync-indicator" style="position:fixed;bottom:70px;right:18px;font-size:12px;padding:5px 12px;border-radius:20px;background:var(--surface);border:1px solid var(--border);color:var(--hint);display:none;z-index:200;transition:all .3s;box-shadow:0 2px 8px rgba(0,0,0,.08)"></div>
+
 </body>
 </html>
