@@ -4,56 +4,82 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Phiếu Trả Lời</title>
-<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@300;400;500;600&family=Playfair+Display:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@300;400;500;600;700&family=Playfair+Display:wght@400;500&display=swap" rel="stylesheet">
 <style>
-:root {
-  --bg:#F4F2ED; --surface:#FDFCF9; --surface2:#F8F6F1;
-  --border:#DDD9D0; --border-soft:#EAE7E0;
-  --text:#1C1A17; --muted:#6B675F; --hint:#A8A49C;
-  --accent:#2952E3; --accent-bg:#EEF2FF; --accent-border:#C7D2FE;
-  --green:#15803D; --green-bg:#F0FDF4; --green-bd:#86EFAC;
-  --red:#C41C1C;   --red-bg:#FEF2F2;   --red-bd:#FCA5A5;
-  --amber:#B45309; --amber-bg:#FFFBEB;
-  --r:8px; --rlg:14px;
+:root{
+  --bg:#F4F2ED;--surface:#FDFCF9;--surface2:#F8F6F1;
+  --border:#DDD9D0;--border-soft:#EAE7E0;
+  --text:#1C1A17;--muted:#6B675F;--hint:#A8A49C;
+  --accent:#2952E3;--accent-bg:#EEF2FF;--accent-border:#C7D2FE;
+  --green:#15803D;--green-bg:#F0FDF4;--green-bd:#86EFAC;
+  --red:#C41C1C;--red-bg:#FEF2F2;--red-bd:#FCA5A5;
+  --amber:#B45309;--amber-bg:#FFFBEB;
+  --r:8px;--rlg:14px;
   --font:'Be Vietnam Pro',sans-serif;
   --font-display:'Playfair Display',serif;
 }
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-body{font-family:var(--font);background:var(--bg);color:var(--text);min-height:100vh;font-size:14px;line-height:1.55}
+body{font-family:var(--font);background:var(--bg);color:var(--text);min-height:100vh;font-size:15px;line-height:1.6}
 
-/* ── HEADER ── */
+/* LOGIN OVERLAY */
+#login-overlay{position:fixed;inset:0;background:var(--bg);z-index:1000;display:flex;align-items:center;justify-content:center;padding:20px}
+.login-box{background:var(--surface);border:1px solid var(--border);border-radius:var(--rlg);padding:40px 36px;width:100%;max-width:400px;box-shadow:0 8px 40px rgba(0,0,0,.08)}
+.login-logo{font-family:var(--font-display);font-size:26px;font-weight:500;text-align:center;margin-bottom:6px}
+.login-sub{font-size:12px;color:var(--hint);text-align:center;margin-bottom:28px}
+.login-tabs{display:flex;border:1px solid var(--border);border-radius:var(--r);overflow:hidden;margin-bottom:22px}
+.ltab{flex:1;padding:9px;font-family:var(--font);font-size:13px;font-weight:500;background:transparent;border:none;color:var(--muted);cursor:pointer;transition:all .15s}
+.ltab.active{background:var(--text);color:var(--surface)}
+.login-err{background:var(--red-bg);border:1px solid var(--red-bd);color:var(--red);border-radius:var(--r);padding:9px 13px;font-size:13px;margin-bottom:14px;display:none}
+.login-err.show{display:block}
+.login-ok{background:var(--green-bg);border:1px solid var(--green-bd);color:var(--green);border-radius:var(--r);padding:9px 13px;font-size:13px;margin-bottom:14px;display:none}
+.login-ok.show{display:block}
+.lfield{margin-bottom:14px}
+.lfield label{display:block;font-size:11px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--hint);margin-bottom:5px}
+.lfield input{width:100%;padding:10px 12px;font-size:14px;font-family:var(--font);border:1px solid var(--border);border-radius:var(--r);background:var(--bg);color:var(--text);outline:none;transition:border-color .15s}
+.lfield input:focus{border-color:var(--accent)}
+.lbtn{width:100%;padding:11px;font-family:var(--font);font-size:14px;font-weight:600;background:var(--text);color:var(--surface);border:none;border-radius:var(--r);cursor:pointer;transition:opacity .15s;margin-top:4px}
+.lbtn:hover{opacity:.87}.lbtn:active{transform:scale(.98)}
+
+/* HEADER */
 header{background:var(--surface);border-bottom:1px solid var(--border);padding:0 28px;display:flex;align-items:stretch;position:sticky;top:0;z-index:200}
-.hbrand{display:flex;align-items:center;gap:10px;padding:12px 20px 12px 0;border-right:1px solid var(--border-soft);margin-right:16px}
-.hbrand h1{font-family:var(--font-display);font-size:18px;font-weight:500;letter-spacing:-.01em}
-.htabs{display:flex;align-items:stretch;gap:0}
-.htab{padding:0 16px;font-family:var(--font);font-size:12px;font-weight:500;letter-spacing:.04em;text-transform:uppercase;color:var(--hint);background:transparent;border:none;border-bottom:2px solid transparent;cursor:pointer;transition:color .15s,border-color .15s}
-.htab:hover{color:var(--muted)}
-.htab.active{color:var(--text);border-bottom-color:var(--text)}
-.hright{margin-left:auto;display:flex;align-items:center;gap:8px;padding:12px 0}
-.ppill{background:var(--bg);border:1px solid var(--border);border-radius:20px;padding:3px 12px;font-size:11px;color:var(--muted)}
+.hbrand{display:flex;align-items:center;gap:10px;padding:13px 22px 13px 0;border-right:1px solid var(--border-soft);margin-right:18px}
+.hbrand h1{font-family:var(--font-display);font-size:20px;font-weight:500;letter-spacing:-.01em}
+.htabs{display:flex;align-items:stretch}
+.htab{padding:0 18px;font-family:var(--font);font-size:12px;font-weight:600;letter-spacing:.05em;text-transform:uppercase;color:var(--hint);background:transparent;border:none;border-bottom:2px solid transparent;cursor:pointer;transition:color .15s,border-color .15s}
+.htab:hover{color:var(--muted)}.htab.active{color:var(--text);border-bottom-color:var(--text)}
+.hright{margin-left:auto;display:flex;align-items:center;gap:10px;padding:13px 0}
+.ppill{background:var(--bg);border:1px solid var(--border);border-radius:20px;padding:4px 13px;font-size:12px;color:var(--muted)}
 .ppill b{color:var(--text);font-weight:600}
+.user-chip{display:flex;align-items:center;gap:7px;padding:5px 12px 5px 8px;background:var(--surface2);border:1px solid var(--border);border-radius:20px;cursor:pointer;transition:background .15s}
+.user-chip:hover{background:var(--bg)}
+.user-avatar{width:24px;height:24px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#fff}
+.role-admin .user-avatar{background:var(--accent)}
+.role-teacher .user-avatar{background:var(--amber)}
+.role-student .user-avatar{background:var(--green)}
+.user-name{font-size:12px;font-weight:600;color:var(--text)}
+.role-badge{font-size:10px;padding:2px 6px;border-radius:4px;font-weight:600}
+.rb-admin{background:var(--accent-bg);color:var(--accent)}
+.rb-teacher{background:var(--amber-bg);color:var(--amber)}
+.rb-student{background:var(--green-bg);color:var(--green)}
 
-/* ── MAIN ── */
-main{max-width:960px;margin:0 auto;padding:28px 22px 110px}
-
-/* ── PANEL ── */
+/* MAIN */
+main{max-width:980px;margin:0 auto;padding:28px 22px 110px}
 .panel{display:none}.panel.active{display:block}
 
-/* ── CARD ── */
-.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--rlg);padding:22px;margin-bottom:16px}
-.ctitle{font-family:var(--font-display);font-size:15px;font-weight:500;margin-bottom:14px}
-.csub{font-size:12px;color:var(--hint);margin-bottom:14px;line-height:1.65}
+/* CARD */
+.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--rlg);padding:24px;margin-bottom:18px}
+.ctitle{font-family:var(--font-display);font-size:17px;font-weight:500;margin-bottom:16px}
+.csub{font-size:13px;color:var(--hint);margin-bottom:14px;line-height:1.65}
 
-/* ── FIELDS ── */
-.frow{display:grid;grid-template-columns:repeat(auto-fit,minmax(145px,1fr));gap:10px;margin-bottom:14px}
-.frow.cols2{grid-template-columns:1fr 1fr}
-.field label{display:block;font-size:10px;font-weight:600;letter-spacing:.07em;text-transform:uppercase;color:var(--hint);margin-bottom:4px}
-.field input[type=number],.field input[type=text],.field select,.field textarea{width:100%;padding:8px 10px;font-size:13px;font-family:var(--font);border:1px solid var(--border);border-radius:var(--r);background:var(--bg);color:var(--text);outline:none;transition:border-color .15s}
+/* FIELDS */
+.frow{display:grid;grid-template-columns:repeat(auto-fit,minmax(148px,1fr));gap:11px;margin-bottom:16px}
+.field label{display:block;font-size:11px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--hint);margin-bottom:5px}
+.field input[type=number],.field input[type=text],.field input[type=password],.field select,.field textarea{width:100%;padding:9px 11px;font-size:14px;font-family:var(--font);border:1px solid var(--border);border-radius:var(--r);background:var(--bg);color:var(--text);outline:none;transition:border-color .15s}
 .field textarea{resize:vertical;min-height:90px;line-height:1.5}
 .field input:focus,.field select:focus,.field textarea:focus{border-color:var(--accent)}
 
-/* ── BUTTONS ── */
-.btn{display:inline-flex;align-items:center;gap:6px;padding:8px 16px;font-family:var(--font);font-size:13px;font-weight:500;border-radius:var(--r);cursor:pointer;transition:all .15s}
+/* BUTTONS */
+.btn{display:inline-flex;align-items:center;gap:6px;padding:9px 18px;font-family:var(--font);font-size:14px;font-weight:500;border-radius:var(--r);cursor:pointer;transition:all .15s}
 .btn:active{transform:scale(.97)}
 .btn-dark{background:var(--text);color:var(--surface);border:none}.btn-dark:hover{opacity:.87}
 .btn-ghost{background:transparent;color:var(--muted);border:1px solid var(--border)}.btn-ghost:hover{background:var(--bg)}
@@ -62,197 +88,254 @@ main{max-width:960px;margin:0 auto;padding:28px 22px 110px}
 .btn-red{background:var(--red-bg);color:var(--red);border:1px solid var(--red-bd)}.btn-red:hover{background:#FEE2E2}
 .brow{display:flex;gap:8px;flex-wrap:wrap}
 
-/* ── SECTION HEADER ── */
-.sec-hd{display:flex;align-items:center;gap:10px;margin:24px 0 10px}
+/* SECTION HEADER */
+.sec-hd{display:flex;align-items:center;gap:10px;margin:26px 0 11px}
 .sec-hd:first-child{margin-top:0}
-.stag{font-size:10px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--hint);padding:3px 8px;border:1px solid var(--border-soft);border-radius:4px;background:var(--surface);white-space:nowrap}
+.stag{font-size:11px;font-weight:600;letter-spacing:.07em;text-transform:uppercase;color:var(--hint);padding:3px 9px;border:1px solid var(--border-soft);border-radius:4px;background:var(--surface);white-space:nowrap}
 .sline{flex:1;height:1px;background:var(--border-soft)}
-.sinfo{font-size:11px;color:var(--hint);white-space:nowrap}
+.sinfo{font-size:12px;color:var(--hint);white-space:nowrap}
 
-/* ── TN GRID ── */
-.tn-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:7px}
-.tn-item{background:var(--surface);border:1px solid var(--border-soft);border-radius:var(--r);padding:9px;transition:border-color .15s}
+/* TN GRID */
+.tn-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(128px,1fr));gap:8px}
+.tn-item{background:var(--surface);border:1px solid var(--border-soft);border-radius:var(--r);padding:11px;transition:border-color .15s}
 .tn-item.answered{border-color:var(--accent)}
 .tn-item.correct{border-color:var(--green);background:var(--green-bg)}
 .tn-item.wrong{border-color:var(--red);background:var(--red-bg)}
-.qlbl{font-size:10px;color:var(--hint);margin-bottom:6px;font-weight:500}
-.choices{display:grid;grid-template-columns:1fr 1fr;gap:4px}
-.cbtn{height:27px;border:1px solid var(--border);border-radius:5px;font-family:var(--font);font-size:12px;font-weight:600;background:transparent;color:var(--muted);cursor:pointer;transition:all .1s}
+.qlbl{font-size:11px;color:var(--hint);margin-bottom:7px;font-weight:500}
+.choices{display:grid;grid-template-columns:1fr 1fr;gap:5px}
+.cbtn{height:30px;border:1px solid var(--border);border-radius:5px;font-family:var(--font);font-size:13px;font-weight:600;background:transparent;color:var(--muted);cursor:pointer;transition:all .1s}
 .cbtn:hover{background:var(--bg);border-color:var(--accent);color:var(--accent)}
 .cbtn.selected{background:var(--accent-bg);border-color:var(--accent);color:var(--accent)}
 .cbtn.key-ans{background:var(--green-bg);border-color:var(--green);color:var(--green)}
 .cbtn.wrong-pick{background:var(--red-bg);border-color:var(--red);color:var(--red)}
 .cbtn:disabled{cursor:default}
-.qbadge{font-size:10px;margin-top:5px;text-align:right;font-weight:600}
+.qbadge{font-size:11px;margin-top:6px;text-align:right;font-weight:600}
 .qbadge.ok{color:var(--green)}.qbadge.no{color:var(--red)}
 
-/* ── DS GRID ── */
-.ds-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:8px}
-.ds-item{background:var(--surface);border:1px solid var(--border-soft);border-radius:var(--r);padding:11px}
-.ds-qlbl{font-size:10px;color:var(--hint);margin-bottom:8px;font-weight:500}
-.ds-rows{display:flex;flex-direction:column;gap:5px}
-.ds-row{display:flex;align-items:center;justify-content:space-between;gap:6px}
-.ds-stmt{font-size:12px;color:var(--muted);flex:1}
-.ds-btns{display:flex;gap:3px;align-items:center}
-.dsbtn{width:32px;height:22px;border:1px solid var(--border);border-radius:4px;font-family:var(--font);font-size:10px;font-weight:600;background:transparent;color:var(--muted);cursor:pointer;transition:all .1s}
+/* DS GRID */
+.ds-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:9px}
+.ds-item{background:var(--surface);border:1px solid var(--border-soft);border-radius:var(--r);padding:13px}
+.ds-qlbl{font-size:11px;color:var(--hint);margin-bottom:9px;font-weight:500}
+.ds-rows{display:flex;flex-direction:column;gap:6px}
+.ds-row{display:flex;align-items:center;justify-content:space-between;gap:7px}
+.ds-stmt{font-size:13px;color:var(--muted);flex:1}
+.ds-btns{display:flex;gap:4px;align-items:center}
+.dsbtn{width:36px;height:24px;border:1px solid var(--border);border-radius:4px;font-family:var(--font);font-size:11px;font-weight:600;background:transparent;color:var(--muted);cursor:pointer;transition:all .1s}
 .dsbtn.dung{background:var(--green-bg);border-color:var(--green-bd);color:var(--green)}
 .dsbtn.sai{background:var(--red-bg);border-color:var(--red-bd);color:var(--red)}
 .dsbtn:disabled{cursor:default}
-.ds-dot{width:6px;height:6px;border-radius:50%;flex-shrink:0}
+.ds-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0}
 .ds-dot.ok{background:var(--green)}.ds-dot.no{background:var(--red)}.ds-dot.na{background:var(--border)}
-.ds-score-line{font-size:10px;margin-top:7px;padding-top:6px;border-top:1px solid var(--border-soft);display:flex;justify-content:space-between;color:var(--hint)}
+.ds-score-line{font-size:11px;margin-top:8px;padding-top:7px;border-top:1px solid var(--border-soft);display:flex;justify-content:space-between;color:var(--hint)}
 .ds-score-line b{font-weight:600;color:var(--text)}
 
-/* ── TLN GRID ── */
-.tln-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(112px,1fr));gap:7px}
-.tln-item{background:var(--surface);border:1px solid var(--border-soft);border-radius:var(--r);padding:9px}
+/* TLN GRID */
+.tln-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(118px,1fr));gap:8px}
+.tln-item{background:var(--surface);border:1px solid var(--border-soft);border-radius:var(--r);padding:11px}
 .tln-item.correct{border-color:var(--green);background:var(--green-bg)}
 .tln-item.wrong{border-color:var(--red);background:var(--red-bg)}
-.tlninput{width:100%;padding:5px 8px;font-family:var(--font);font-size:16px;font-weight:600;text-align:center;border:1px solid var(--border);border-radius:5px;background:var(--bg);color:var(--text);margin-top:5px;outline:none;transition:border-color .15s}
+.tlninput{width:100%;padding:6px 8px;font-family:var(--font);font-size:18px;font-weight:600;text-align:center;border:1px solid var(--border);border-radius:5px;background:var(--bg);color:var(--text);margin-top:6px;outline:none;transition:border-color .15s}
 .tlninput:focus{border-color:var(--accent)}
 .tlninput.has-val{border-color:var(--accent);color:var(--accent)}
 .tlninput:disabled{background:transparent;border-color:transparent;cursor:default}
 
-/* ── SCORE SCREEN ── */
+/* SCORE SCREEN */
 .score-screen{display:none}
-.score-hero{background:var(--surface);border:1px solid var(--border);border-radius:var(--rlg);padding:32px;text-align:center;margin-bottom:16px}
-.bigscore{font-family:var(--font-display);font-size:62px;font-weight:400;line-height:1;letter-spacing:-.02em;margin-bottom:4px}
-.scoredenom{font-size:12px;color:var(--hint);margin-bottom:20px}
-.scorebd{display:flex;justify-content:center;gap:30px;flex-wrap:wrap}
-.sbi{text-align:center}
-.sbval{font-size:22px;font-weight:600}
-.sblbl{font-size:10px;color:var(--hint);text-transform:uppercase;letter-spacing:.06em;margin-top:2px}
+.score-hero{background:var(--surface);border:1px solid var(--border);border-radius:var(--rlg);padding:36px;text-align:center;margin-bottom:18px}
+.bigscore{font-family:var(--font-display);font-size:68px;font-weight:400;line-height:1;letter-spacing:-.02em;margin-bottom:4px}
+.scoredenom{font-size:13px;color:var(--hint);margin-bottom:22px}
+.scorebd{display:flex;justify-content:center;gap:32px;flex-wrap:wrap}
+.sbi{text-align:center}.sbval{font-size:24px;font-weight:600}
+.sblbl{font-size:11px;color:var(--hint);text-transform:uppercase;letter-spacing:.06em;margin-top:2px}
 .sbi.tn .sbval{color:var(--accent)}.sbi.ds .sbval{color:var(--amber)}.sbi.tln .sbval{color:var(--green)}
 
-/* ── EXAM LIST ── */
+/* EXAM LIST */
 .exam-list{display:flex;flex-direction:column;gap:10px}
-.exam-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--rlg);padding:16px 18px;display:flex;align-items:center;gap:14px;transition:border-color .15s}
+.exam-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--rlg);padding:18px 20px;display:flex;align-items:center;gap:16px;transition:border-color .15s}
 .exam-card:hover{border-color:var(--accent)}
 .exam-card-info{flex:1}
-.exam-card-name{font-weight:600;font-size:14px;margin-bottom:2px}
-.exam-card-meta{font-size:11px;color:var(--hint)}
-.exam-card-actions{display:flex;gap:6px}
+.exam-card-name{font-weight:600;font-size:15px;margin-bottom:3px}
+.exam-card-meta{font-size:12px;color:var(--hint)}
+.exam-card-actions{display:flex;gap:7px}
 
-/* ── SCORING ── */
-.toggle-row{display:flex;gap:8px;margin-bottom:12px}
-.tgbtn{padding:5px 14px;border:1px solid var(--border);border-radius:20px;font-family:var(--font);font-size:12px;font-weight:500;background:transparent;color:var(--muted);cursor:pointer;transition:all .15s}
+/* EXAM BANNER */
+.exam-banner{background:var(--surface);border:1px solid var(--border);border-radius:var(--rlg);padding:18px 22px;margin-bottom:20px;display:flex;align-items:center;gap:16px}
+.eb-info{flex:1}
+.eb-name{font-family:var(--font-display);font-size:18px;font-weight:500;margin-bottom:3px}
+.eb-meta{font-size:12px;color:var(--hint)}
+.eb-actions{display:flex;gap:8px}
+
+/* GITHUB SYNC */
+.gh-card{background:var(--surface2);border:1px solid var(--border);border-radius:var(--rlg);padding:20px 22px;margin-bottom:18px}
+.gh-title{font-size:14px;font-weight:600;margin-bottom:14px;display:flex;align-items:center;gap:8px}
+.gh-status{font-size:11px;padding:3px 10px;border-radius:12px;border:1px solid var(--border);color:var(--hint);background:var(--bg);margin-left:auto}
+.gh-status.ok{color:var(--green);border-color:var(--green-bd);background:var(--green-bg)}
+.gh-status.err{color:var(--red);border-color:var(--red-bd);background:var(--red-bg)}
+.gh-status.loading{color:var(--accent);border-color:var(--accent-border);background:var(--accent-bg)}
+.gh-fields{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px}
+
+/* USER MANAGEMENT TABLE */
+.utbl{width:100%;border-collapse:collapse;font-size:13px}
+.utbl th{text-align:left;font-size:10px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--hint);padding:6px 12px 10px;border-bottom:1px solid var(--border-soft)}
+.utbl td{padding:10px 12px;border-bottom:1px solid var(--border-soft);vertical-align:middle}
+.utbl tr:last-child td{border-bottom:none}
+.utbl select{padding:4px 8px;font-family:var(--font);font-size:12px;border:1px solid var(--border);border-radius:6px;background:var(--bg);color:var(--text);outline:none}
+
+/* SCORING */
+.toggle-row{display:flex;gap:8px;margin-bottom:13px}
+.tgbtn{padding:5px 15px;border:1px solid var(--border);border-radius:20px;font-family:var(--font);font-size:12px;font-weight:500;background:transparent;color:var(--muted);cursor:pointer;transition:all .15s}
 .tgbtn.active{background:var(--text);color:var(--surface);border-color:var(--text)}
-.infobox{background:var(--accent-bg);border:1px solid var(--accent-border);border-radius:var(--r);padding:10px 14px;font-size:12px;color:#1E3A8A;line-height:1.7}
-.sc-table{width:100%;border-collapse:collapse;font-size:12px;margin-top:10px}
-.sc-table th{text-align:left;font-size:10px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--hint);padding:4px 10px 8px;border-bottom:1px solid var(--border-soft)}
-.sc-table td{padding:6px 10px;border-bottom:1px solid var(--border-soft)}
+.infobox{background:var(--accent-bg);border:1px solid var(--accent-border);border-radius:var(--r);padding:11px 15px;font-size:13px;color:#1E3A8A;line-height:1.7}
+.sc-table{width:100%;border-collapse:collapse;font-size:13px;margin-top:10px}
+.sc-table th{text-align:left;font-size:11px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--hint);padding:4px 10px 8px;border-bottom:1px solid var(--border-soft)}
+.sc-table td{padding:7px 10px;border-bottom:1px solid var(--border-soft)}
 .sc-table tr:last-child td{border-bottom:none}
-.sc-table input[type=number]{width:68px;padding:4px 8px;font-family:var(--font);font-size:12px;border:1px solid var(--border);border-radius:5px;background:var(--bg);color:var(--text);outline:none}
+.sc-table input[type=number]{width:70px;padding:4px 8px;font-family:var(--font);font-size:13px;border:1px solid var(--border);border-radius:5px;background:var(--bg);color:var(--text);outline:none}
 .sc-table input:focus{border-color:var(--accent)}
 
-
-
-/* ── BOTTOM BAR ── */
-.bbar{display:none;position:fixed;bottom:0;left:0;right:0;background:var(--surface);border-top:1px solid var(--border);padding:10px 28px;align-items:center;gap:14px;z-index:100}
+/* BOTTOM BAR */
+.bbar{display:none;position:fixed;bottom:0;left:0;right:0;background:var(--surface);border-top:1px solid var(--border);padding:11px 28px;align-items:center;gap:14px;z-index:100}
 .pbar-wrap{flex:1;height:3px;background:var(--border-soft);border-radius:2px;overflow:hidden}
 .pbar-fill{height:100%;background:var(--accent);border-radius:2px;transition:width .3s}
-.plbl{font-size:11px;color:var(--muted);white-space:nowrap}
+.plbl{font-size:12px;color:var(--muted);white-space:nowrap}
 .bbar-actions{display:flex;gap:8px}
 
-/* ── SAVE/LOAD ── */
-.savebar{display:flex;gap:8px;align-items:center;padding:10px 0;border-top:1px solid var(--border-soft);margin-top:14px}
-.savebar span{font-size:11px;color:var(--hint);margin-right:4px}
-
-/* ── TOAST ── */
-.toast{position:fixed;top:64px;right:18px;background:var(--text);color:var(--surface);padding:9px 15px;border-radius:var(--r);font-size:12px;opacity:0;transform:translateY(-6px);pointer-events:none;transition:all .2s;z-index:400}
-.toast.show{opacity:1;transform:translateY(0)}
-
-/* ── MODAL ── */
-.modal-bg{display:none;position:fixed;inset:0;background:rgba(0,0,0,.35);z-index:300;align-items:center;justify-content:center}
+/* MODAL */
+.modal-bg{display:none;position:fixed;inset:0;background:rgba(0,0,0,.35);z-index:500;align-items:center;justify-content:center}
 .modal-bg.open{display:flex}
-.modal{background:var(--surface);border:1px solid var(--border);border-radius:var(--rlg);padding:24px;max-width:460px;width:90%;max-height:90vh;overflow-y:auto}
-.modal-title{font-family:var(--font-display);font-size:16px;font-weight:500;margin-bottom:14px}
+.modal{background:var(--surface);border:1px solid var(--border);border-radius:var(--rlg);padding:26px;max-width:480px;width:92%;max-height:90vh;overflow-y:auto}
+.modal-title{font-family:var(--font-display);font-size:17px;font-weight:500;margin-bottom:14px}
+
+/* TOAST */
+.toast{position:fixed;top:68px;right:18px;background:var(--text);color:var(--surface);padding:10px 16px;border-radius:var(--r);font-size:13px;opacity:0;transform:translateY(-6px);pointer-events:none;transition:all .2s;z-index:600}
+.toast.show{opacity:1;transform:translateY(0)}
 
 @keyframes fadeUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
 .anim{animation:fadeUp .3s ease both}
 
 @media(max-width:600px){
-  header{padding:0 12px}.hbrand{padding:10px 12px 10px 0}
-  main{padding:16px 12px 110px}.bbar{padding:9px 12px}
-  .bigscore{font-size:46px}
+  header{padding:0 13px}.hbrand{padding:11px 13px 11px 0}
+  main{padding:16px 13px 110px}.bbar{padding:9px 13px}
+  .bigscore{font-size:50px}.exam-banner{flex-direction:column;align-items:flex-start}
+  .gh-fields{grid-template-columns:1fr}
 }
 </style>
 </head>
 <body>
 
+<!-- ═══ LOGIN OVERLAY ═══ -->
+<div id="login-overlay">
+  <div class="login-box">
+    <div class="login-logo">Phiếu Trả Lời</div>
+    <div class="login-sub">Hệ thống quản lý đề thi</div>
+    <div class="login-tabs">
+      <button class="ltab active" id="ltab-login" onclick="showLoginTab('login')">Đăng nhập</button>
+      <button class="ltab" id="ltab-register" onclick="showLoginTab('register')">Đăng ký</button>
+    </div>
+    <div class="login-err" id="login-err"></div>
+    <div class="login-ok" id="login-ok"></div>
+
+    <!-- Login form -->
+    <div id="lform-login">
+      <div class="lfield"><label>Tên đăng nhập</label><input type="text" id="l-username" placeholder="username" autocomplete="username"></div>
+      <div class="lfield"><label>Mật khẩu</label><input type="password" id="l-password" placeholder="••••••••" autocomplete="current-password" onkeydown="if(event.key==='Enter')doLogin()"></div>
+      <button class="lbtn" onclick="doLogin()">Đăng nhập</button>
+    </div>
+
+    <!-- Register form -->
+    <div id="lform-register" style="display:none">
+      <div class="lfield"><label>Họ và tên</label><input type="text" id="r-fullname" placeholder="Nguyễn Văn A"></div>
+      <div class="lfield"><label>Tên đăng nhập</label><input type="text" id="r-username" placeholder="nguyenvana" autocomplete="username"></div>
+      <div class="lfield"><label>Mật khẩu</label><input type="password" id="r-password" placeholder="Tối thiểu 6 ký tự" autocomplete="new-password"></div>
+      <div class="lfield"><label>Xác nhận mật khẩu</label><input type="password" id="r-password2" placeholder="Nhập lại mật khẩu" onkeydown="if(event.key==='Enter')doRegister()"></div>
+      <button class="lbtn" onclick="doRegister()">Đăng ký tài khoản</button>
+    </div>
+
+    <p id="login-loading" style="text-align:center;font-size:13px;color:var(--hint);margin-top:16px;display:none">Đang tải dữ liệu...</p>
+  </div>
+</div>
+
+<!-- ═══ APP ═══ -->
 <header>
   <div class="hbrand"><h1>Phiếu Trả Lời</h1></div>
   <nav class="htabs">
-    <button class="htab active" onclick="switchTab('exams',this)">Đề thi</button>
+    <button class="htab active" id="tab-exams-btn" onclick="switchTab('exams',this)">Đề thi</button>
     <button class="htab" id="tab-creator-btn" onclick="switchTab('creator',this)">Tạo / Sửa</button>
     <button class="htab" id="tab-sheet-btn" onclick="switchTab('sheet',this)">Làm bài</button>
+    <button class="htab" id="tab-admin-btn" onclick="switchTab('admin',this)" style="display:none">Quản trị</button>
   </nav>
   <div class="hright">
     <div class="ppill" id="hprog" style="display:none"><b id="hp-done">0</b> / <b id="hp-total">0</b></div>
+    <div class="user-chip" id="user-chip" onclick="doLogout()">
+      <div class="user-avatar" id="user-avatar">?</div>
+      <span class="user-name" id="user-name-display">—</span>
+      <span class="role-badge" id="role-badge-display">—</span>
+    </div>
   </div>
 </header>
 
 <main>
 
-<!-- ═══ TAB: EXAM LIST ═══ -->
+<!-- ═══ TAB: ĐỀ THI ═══ -->
 <div class="panel active" id="panel-exams">
-  <div class="card">
-    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px">
-      <p class="ctitle" style="margin:0">Danh sách đề thi</p>
-      <div class="brow">
-        <button class="btn btn-ghost" style="font-size:12px" onclick="importExams()">📂 Tải file</button>
-        <button class="btn btn-ghost" style="font-size:12px" onclick="exportAllExams()">💾 Lưu file</button>
-        <button class="btn btn-dark" onclick="newExam()">+ Tạo đề mới</button>
-      </div>
+  <!-- GitHub Sync (admin only) -->
+  <div class="gh-card" id="gh-card" style="display:none">
+    <div class="gh-title">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z"/></svg>
+      GitHub Sync
+      <span class="gh-status" id="gh-status">Chưa cấu hình</span>
     </div>
-    <div id="exam-list-area"><p style="color:var(--hint);font-size:13px;padding:20px 0 10px;text-align:center">Chưa có đề thi nào. Nhấn <b style="color:var(--text)">+ Tạo đề mới</b> để bắt đầu.</p></div>
-  </div>
-  <p style="font-size:11px;color:var(--hint);text-align:center;margin-top:-4px">Dữ liệu lưu trong trình duyệt (localStorage). Dùng <b>Lưu file / Tải file</b> để sao lưu hoặc chuyển sang thiết bị khác.</p>
-</div>
-
-<!-- ═══ TAB: CREATOR ═══ -->
-<div class="panel" id="panel-creator">
-
-    <div class="field" style="margin-bottom:10px">
-      <label>Dán text đáp án vào đây</label>
-      <textarea id="ai-raw-text" placeholder="Câu 1 2 3 4 5&#10;Chọn D D C D A&#10;1 Đúng Sai Sai Đúng&#10;1. 2024&#10;..."></textarea>
+    <div class="gh-fields">
+      <div class="field"><label>GitHub Token</label><input type="password" id="gh-token" placeholder="ghp_xxxxxxxxxxxx" oninput="saveGhConfig()"></div>
+      <div class="field"><label>Owner / Repo</label><input type="text" id="gh-repo" placeholder="username/repo-name" oninput="saveGhConfig()"></div>
+      <div class="field"><label>File đề thi (JSON)</label><input type="text" id="gh-path" placeholder="exams.json" oninput="saveGhConfig()"></div>
+      <div class="field"><label>File người dùng (JSON)</label><input type="text" id="gh-users-path" placeholder="users.json" oninput="saveGhConfig()"></div>
+      <div class="field"><label>Branch</label><input type="text" id="gh-branch" placeholder="main" oninput="saveGhConfig()"></div>
     </div>
     <div class="brow">
-      <button class="btn btn-ghost" onclick="document.getElementById('ai-raw-text').value=''">Xóa</button>
+      <button class="btn btn-blue" onclick="ghPullExams()">⬇ Tải đề thi</button>
+      <button class="btn btn-green" onclick="ghPushExams()">⬆ Lưu đề thi</button>
+      <a id="gh-file-link" href="#" target="_blank" class="btn btn-ghost" style="display:none">Xem file ↗</a>
     </div>
+    <p style="font-size:11px;color:var(--hint);margin-top:10px">Token cần quyền <b>repo</b>. <a href="https://github.com/settings/tokens/new" target="_blank" style="color:var(--accent);text-decoration:none">Tạo token ↗</a></p>
   </div>
 
-  <!-- Step 1 -->
+  <div class="card">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:18px;flex-wrap:wrap;gap:10px">
+      <p class="ctitle" style="margin:0">Danh sách đề thi</p>
+      <div class="brow" id="exam-list-actions">
+        <button class="btn btn-ghost" style="font-size:13px" onclick="importExams()">📂 Tải file</button>
+        <button class="btn btn-ghost" style="font-size:13px" onclick="exportAllExams()">💾 Lưu file</button>
+        <button class="btn btn-dark" id="btn-new-exam" onclick="newExam()">+ Tạo đề mới</button>
+      </div>
+    </div>
+    <div id="exam-list-area"></div>
+  </div>
+</div>
+
+<!-- ═══ TAB: TẠO / SỬA ═══ -->
+<div class="panel" id="panel-creator">
   <div class="card" id="creator-cfg-card">
     <p class="ctitle" id="creator-card-title">Tạo đề thi mới</p>
     <div class="frow">
-      <div class="field" style="grid-column:1/-1">
-        <label>Tên đề thi</label>
-        <input type="text" id="ex-name" placeholder="VD: Kiểm tra HK1 Toán 12">
-      </div>
+      <div class="field" style="grid-column:1/-1"><label>Tên đề thi</label><input type="text" id="ex-name" placeholder="VD: Kiểm tra HK1 Toán 12"></div>
       <div class="field"><label>Trắc nghiệm (câu)</label><input type="number" id="ex-tn" value="12" min="0" max="80"></div>
       <div class="field"><label>Đúng – Sai (câu)</label><input type="number" id="ex-ds" value="4" min="0" max="20"></div>
       <div class="field"><label>Trả lời ngắn (câu)</label><input type="number" id="ex-tln" value="6" min="0" max="20"></div>
     </div>
     <div class="brow">
       <button class="btn btn-dark" onclick="initCreator()">Tiếp theo →</button>
-      <button class="btn btn-ghost" onclick="switchTab('exams',document.querySelector('.htab'))">Huỷ</button>
+      <button class="btn btn-ghost" onclick="switchTab('exams',document.getElementById('tab-exams-btn'))">Huỷ</button>
     </div>
   </div>
-
   <div id="creator-key-area" style="display:none">
-    <!-- Scoring -->
     <div class="card">
       <p class="ctitle">Thang điểm</p>
       <div class="toggle-row">
         <button class="tgbtn active" id="sc-def-btn" onclick="setScoringMode('default')">Mặc định</button>
         <button class="tgbtn" id="sc-cus-btn" onclick="setScoringMode('custom')">Tuỳ chỉnh</button>
       </div>
-      <div id="sc-def-info" class="infobox">
-        Trắc nghiệm: <b>0,25đ</b>/câu &nbsp;·&nbsp;
-        Đúng–Sai: 4/4→<b>1đ</b>, 3/4→<b>0,5đ</b>, 2/4→<b>0,25đ</b>, 1/4→<b>0,1đ</b>, 0/4→<b>0đ</b> &nbsp;·&nbsp;
-        Trả lời ngắn: <b>0,5đ</b>/câu
-      </div>
+      <div id="sc-def-info" class="infobox">Trắc nghiệm: <b>0,25đ</b>/câu &nbsp;·&nbsp; Đúng–Sai: 4/4→<b>1đ</b>, 3/4→<b>0,5đ</b>, 2/4→<b>0,25đ</b>, 1/4→<b>0,1đ</b>, 0/4→<b>0đ</b> &nbsp;·&nbsp; Trả lời ngắn: <b>0,5đ</b>/câu</div>
       <div id="sc-cus-area" style="display:none">
         <table class="sc-table">
           <thead><tr><th>Phần</th><th>Điểm</th><th>Ghi chú</th></tr></thead>
@@ -260,25 +343,21 @@ main{max-width:960px;margin:0 auto;padding:28px 22px 110px}
             <tr id="sc-tn-row"><td>Trắc nghiệm</td><td><input type="number" id="sc-tn" step="0.01" min="0" value="0.25"></td><td style="color:var(--hint)">mỗi câu đúng</td></tr>
             <tr id="sc-tln-row"><td>Trả lời ngắn</td><td><input type="number" id="sc-tln-pt" step="0.01" min="0" value="0.5"></td><td style="color:var(--hint)">mỗi câu đúng</td></tr>
             <tr><td>Đúng–Sai</td>
-              <td colspan="2" style="font-size:11px;color:var(--hint)">
-                4/4: <input type="number" id="sc-ds4" step="0.01" min="0" value="1" style="width:52px">đ &nbsp;
-                3/4: <input type="number" id="sc-ds3" step="0.01" min="0" value="0.5" style="width:52px">đ &nbsp;
-                2/4: <input type="number" id="sc-ds2" step="0.01" min="0" value="0.25" style="width:52px">đ &nbsp;
-                1/4: <input type="number" id="sc-ds1" step="0.01" min="0" value="0.1" style="width:52px">đ
+              <td colspan="2" style="font-size:12px;color:var(--hint)">
+                4/4:<input type="number" id="sc-ds4" step="0.01" min="0" value="1" style="width:52px">đ
+                3/4:<input type="number" id="sc-ds3" step="0.01" min="0" value="0.5" style="width:52px">đ
+                2/4:<input type="number" id="sc-ds2" step="0.01" min="0" value="0.25" style="width:52px">đ
+                1/4:<input type="number" id="sc-ds1" step="0.01" min="0" value="0.1" style="width:52px">đ
               </td>
             </tr>
           </tbody>
         </table>
       </div>
     </div>
-
-    <!-- Answer key -->
     <div class="card">
       <p class="ctitle">Đáp án</p>
-      <div id="key-tn-sec"></div>
-      <div id="key-ds-sec"></div>
-      <div id="key-tln-sec"></div>
-      <div class="brow" style="margin-top:20px">
+      <div id="key-tn-sec"></div><div id="key-ds-sec"></div><div id="key-tln-sec"></div>
+      <div class="brow" style="margin-top:22px">
         <button class="btn btn-dark" onclick="finalizeExam()">Lưu đề thi ✓</button>
         <button class="btn btn-ghost" onclick="resetCreator()">Đặt lại</button>
       </div>
@@ -286,16 +365,24 @@ main{max-width:960px;margin:0 auto;padding:28px 22px 110px}
   </div>
 </div>
 
-<!-- ═══ TAB: SHEET ═══ -->
+<!-- ═══ TAB: LÀM BÀI ═══ -->
 <div class="panel" id="panel-sheet">
-  <div id="no-exam-msg" class="card" style="text-align:center;padding:40px 24px">
-    <p style="color:var(--hint);font-size:13px;margin-bottom:14px">Chọn một đề thi và nhấn <b style="color:var(--text)">Làm bài</b> ở tab Đề thi.</p>
-    <button class="btn btn-dark" onclick="switchTab('exams',document.querySelector('.htab'))">Về Đề thi →</button>
+  <div id="no-exam-msg" class="card" style="text-align:center;padding:44px 24px">
+    <p style="color:var(--hint);font-size:14px;margin-bottom:16px">Chọn một đề thi và nhấn <b style="color:var(--text)">Làm bài</b> ở tab Đề thi.</p>
+    <button class="btn btn-dark" onclick="switchTab('exams',document.getElementById('tab-exams-btn'))">Về Đề thi →</button>
+  </div>
+  <div class="exam-banner anim" id="exam-banner" style="display:none">
+    <div class="eb-info">
+      <div class="eb-name" id="eb-name">—</div>
+      <div class="eb-meta" id="eb-meta">—</div>
+    </div>
+    <div class="eb-actions">
+      <a id="eb-link" href="#" target="_blank" class="btn btn-ghost" style="display:none">Xem đề ↗</a>
+      <button class="btn btn-ghost" onclick="switchTab('exams',document.getElementById('tab-exams-btn'))">← Đề thi</button>
+    </div>
   </div>
   <div id="sheet-area" style="display:none">
-    <div id="sheet-tn-sec"></div>
-    <div id="sheet-ds-sec"></div>
-    <div id="sheet-tln-sec"></div>
+    <div id="sheet-tn-sec"></div><div id="sheet-ds-sec"></div><div id="sheet-tln-sec"></div>
   </div>
   <div class="score-screen" id="score-screen">
     <div class="score-hero">
@@ -307,10 +394,24 @@ main{max-width:960px;margin:0 auto;padding:28px 22px 110px}
         <div class="sbi tln" id="sb-tln"><div class="sbval" id="sc-tln-val">—</div><div class="sblbl">Trả lời ngắn</div></div>
       </div>
     </div>
-    <div class="brow" style="margin-top:14px">
+    <div class="brow" style="margin-top:16px">
       <button class="btn btn-ghost" onclick="retakeExam()">Làm lại</button>
       <button class="btn btn-blue" onclick="exportResult()">Xuất kết quả ↗</button>
     </div>
+  </div>
+</div>
+
+<!-- ═══ TAB: QUẢN TRỊ (admin only) ═══ -->
+<div class="panel" id="panel-admin">
+  <div class="card">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:18px;flex-wrap:wrap;gap:10px">
+      <p class="ctitle" style="margin:0">Quản lý người dùng</p>
+      <div class="brow">
+        <button class="btn btn-blue" onclick="ghPullUsers()">⬇ Tải từ GitHub</button>
+        <button class="btn btn-green" onclick="ghPushUsers()">⬆ Lưu lên GitHub</button>
+      </div>
+    </div>
+    <div id="users-table-area"><p style="color:var(--hint);font-size:13px">Nhấn "Tải từ GitHub" để xem danh sách.</p></div>
   </div>
 </div>
 
@@ -328,542 +429,521 @@ main{max-width:960px;margin:0 auto;padding:28px 22px 110px}
 
 <div class="toast" id="toast"></div>
 
-<!-- DELETE MODAL -->
 <div class="modal-bg" id="del-modal">
   <div class="modal">
     <p class="modal-title">Xoá đề thi?</p>
-    <p style="font-size:13px;color:var(--muted);margin-bottom:20px">Hành động này không thể hoàn tác.</p>
-    <div class="brow">
-      <button class="btn btn-red" onclick="confirmDelete()">Xoá</button>
-      <button class="btn btn-ghost" onclick="closeModal('del-modal')">Huỷ</button>
-    </div>
+    <p style="font-size:14px;color:var(--muted);margin-bottom:20px">Hành động này không thể hoàn tác.</p>
+    <div class="brow"><button class="btn btn-red" onclick="confirmDelete()">Xoá</button><button class="btn btn-ghost" onclick="closeModal('del-modal')">Huỷ</button></div>
   </div>
 </div>
 
 <script>
-/* ════════════════════════════════════════
-   STATE
-════════════════════════════════════════ */
-let exams = {};       // { id: examObj }
-let currentExamId = null;
-let editingExamId = null;
-let deleteTargetId = null;
-let creatorKey = { tn:{}, ds:{}, tln:{} };
-let scoringMode = 'default';
-let sheet = { tn:{}, ds:{}, tln:{} };
-let submitted = false;
-let lastScore = null;
+/* ════════ STATE ════════ */
+let exams={}, users={}, currentExamId=null, editingExamId=null, deleteTargetId=null;
+let creatorKey={tn:{},ds:{},tln:{}}, scoringMode='default';
+let sheet={tn:{},ds:{},tln:{}}, submitted=false, lastScore=null;
+let currentUser=null; // {username, fullname, role}
 
-/* ════════════════════════════════════════
-   PERSISTENCE — localStorage + file I/O
-════════════════════════════════════════ */
-function saveAll() {
-  try { localStorage.setItem('phanmem_exams', JSON.stringify(exams)); } catch(e){}
+/* ════════ SHA-256 ════════ */
+async function sha256(str){
+  const buf=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(str));
+  return Array.from(new Uint8Array(buf)).map(b=>b.toString(16).padStart(2,'0')).join('');
 }
-function loadAll() {
-  try {
-    const raw = localStorage.getItem('phanmem_exams');
-    if (raw) exams = JSON.parse(raw);
-  } catch(e) { exams = {}; }
+
+/* ════════ AUTH ════════ */
+function showLoginTab(tab){
+  document.getElementById('ltab-login').classList.toggle('active',tab==='login');
+  document.getElementById('ltab-register').classList.toggle('active',tab==='register');
+  document.getElementById('lform-login').style.display=tab==='login'?'block':'none';
+  document.getElementById('lform-register').style.display=tab==='register'?'block':'none';
+  clearLoginMsg();
 }
-function exportAllExams() {
-  const blob = new Blob([JSON.stringify(exams, null, 2)], {type:'application/json'});
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement('a'); a.href=url; a.download='de-thi-'+new Date().toISOString().slice(0,10)+'.json'; a.click();
-  URL.revokeObjectURL(url);
-  showToast('Đã lưu file!');
+
+function showLoginErr(msg){const e=document.getElementById('login-err');e.textContent=msg;e.classList.add('show');document.getElementById('login-ok').classList.remove('show');}
+function showLoginOk(msg){const e=document.getElementById('login-ok');e.textContent=msg;e.classList.add('show');document.getElementById('login-err').classList.remove('show');}
+function clearLoginMsg(){document.getElementById('login-err').classList.remove('show');document.getElementById('login-ok').classList.remove('show');}
+
+async function doLogin(){
+  const uname=document.getElementById('l-username').value.trim().toLowerCase();
+  const pass=document.getElementById('l-password').value;
+  if(!uname||!pass){showLoginErr('Vui lòng nhập đầy đủ thông tin.');return;}
+  const hash=await sha256(pass);
+  // Try loading users from GitHub first, then fall back to local
+  await tryLoadUsersFromGH();
+  const u=users[uname];
+  if(!u){showLoginErr('Tên đăng nhập không tồn tại.');return;}
+  if(u.passwordHash!==hash){showLoginErr('Mật khẩu không đúng.');return;}
+  if(u.status==='pending'){showLoginErr('Tài khoản chưa được kích hoạt.');return;}
+  currentUser={username:uname,fullname:u.fullname,role:u.role};
+  try{localStorage.setItem('session',JSON.stringify(currentUser));}catch(e){}
+  onLoginSuccess();
 }
-function importExams() {
-  const inp = document.createElement('input'); inp.type='file'; inp.accept='.json';
-  inp.onchange = e => {
-    const f = e.target.files[0]; if (!f) return;
-    const r = new FileReader();
-    r.onload = ev => {
-      try {
-        const data = JSON.parse(ev.target.result);
-        // Validate: must be object with exam entries that have cfg/key/scoring
-        if (typeof data !== 'object' || Array.isArray(data)) throw new Error('Sai cấu trúc');
-        let count = 0;
-        for (const id in data) {
-          const ex = data[id];
-          if (!ex.cfg || !ex.key || !ex.scoring || !ex.name) {
-            throw new Error(`Đề "${id}" thiếu trường bắt buộc (cfg/key/scoring/name)`);
-          }
-          count++;
-        }
-        Object.assign(exams, data);
-        saveAll(); renderExamList();
-        showToast('Đã tải ' + count + ' đề!');
-      } catch(err) { showToast('❌ ' + err.message); }
+
+async function doRegister(){
+  const fullname=document.getElementById('r-fullname').value.trim();
+  const uname=document.getElementById('r-username').value.trim().toLowerCase();
+  const pass=document.getElementById('r-password').value;
+  const pass2=document.getElementById('r-password2').value;
+  if(!fullname||!uname||!pass){showLoginErr('Vui lòng nhập đầy đủ thông tin.');return;}
+  if(!/^[a-z0-9_]{3,20}$/.test(uname)){showLoginErr('Username chỉ gồm chữ thường, số, dấu _ (3-20 ký tự).');return;}
+  if(pass.length<6){showLoginErr('Mật khẩu tối thiểu 6 ký tự.');return;}
+  if(pass!==pass2){showLoginErr('Mật khẩu xác nhận không khớp.');return;}
+  await tryLoadUsersFromGH();
+  if(users[uname]){showLoginErr('Tên đăng nhập đã tồn tại.');return;}
+  const hash=await sha256(pass);
+  users[uname]={username:uname,fullname,passwordHash:hash,role:'student',status:'active',createdAt:new Date().toISOString()};
+  saveUsersLocal();
+  await tryPushUsers();
+  showLoginOk('Đăng ký thành công! Hãy đăng nhập.');
+  showLoginTab('login');
+  document.getElementById('l-username').value=uname;
+}
+
+function doLogout(){
+  if(!confirm('Đăng xuất?'))return;
+  currentUser=null;
+  try{localStorage.removeItem('session');}catch(e){}
+  location.reload();
+}
+
+function onLoginSuccess(){
+  document.getElementById('login-overlay').style.display='none';
+  applyRoleUI();
+  loadAll();
+  renderExamList();
+  loadGhConfig();
+  showToast('Chào ' + currentUser.fullname + '!');
+}
+
+function applyRoleUI(){
+  const r=currentUser.role;
+  // Header chip
+  const chip=document.getElementById('user-chip');
+  chip.className='user-chip role-'+r;
+  document.getElementById('user-avatar').textContent=currentUser.fullname[0].toUpperCase();
+  document.getElementById('user-name-display').textContent=currentUser.fullname;
+  const rb=document.getElementById('role-badge-display');
+  rb.textContent=r==='admin'?'Admin':r==='teacher'?'Giáo viên':'Học sinh';
+  rb.className='role-badge rb-'+r;
+  // Tabs: student hides Tạo/Sửa; admin shows Quản trị
+  document.getElementById('tab-creator-btn').style.display=(r==='student')?'none':'';
+  document.getElementById('tab-admin-btn').style.display=(r==='admin')?'':'none';
+  // GitHub sync card: admin only
+  document.getElementById('gh-card').style.display=(r==='admin')?'':'none';
+  // Exam list actions
+  document.getElementById('btn-new-exam').style.display=(r==='student')?'none':'';
+}
+
+/* ════════ GITHUB — config ════════ */
+function saveGhConfig(){
+  try{localStorage.setItem('gh_cfg',JSON.stringify({
+    token:document.getElementById('gh-token').value.trim(),
+    repo:document.getElementById('gh-repo').value.trim(),
+    path:document.getElementById('gh-path').value.trim()||'exams.json',
+    usersPath:document.getElementById('gh-users-path').value.trim()||'users.json',
+    branch:document.getElementById('gh-branch').value.trim()||'main',
+  }));}catch(e){}
+  updateGhFileLink();
+}
+function loadGhConfig(){
+  try{
+    const c=JSON.parse(localStorage.getItem('gh_cfg')||'{}');
+    if(c.token)document.getElementById('gh-token').value=c.token;
+    if(c.repo)document.getElementById('gh-repo').value=c.repo;
+    if(c.path)document.getElementById('gh-path').value=c.path;
+    if(c.usersPath)document.getElementById('gh-users-path').value=c.usersPath;
+    if(c.branch)document.getElementById('gh-branch').value=c.branch;
+    updateGhFileLink();
+  }catch(e){}
+}
+function getGhCfg(){
+  try{return JSON.parse(localStorage.getItem('gh_cfg')||'{}');}catch(e){return{};}
+}
+function updateGhFileLink(){
+  const c=getGhCfg();
+  const el=document.getElementById('gh-file-link');
+  if(c.repo&&c.path){el.href=`https://github.com/${c.repo}/blob/${c.branch||'main'}/${c.path}`;el.style.display='inline-flex';}
+  else el.style.display='none';
+}
+function setGhStatus(msg,cls){const e=document.getElementById('gh-status');e.textContent=msg;e.className='gh-status '+(cls||'');}
+
+/* ════════ GITHUB — file ops ════════ */
+async function ghFetch(path,cfg){
+  const c=getGhCfg(); if(!c.repo||!path)throw new Error('Chưa cấu hình repo/path');
+  const url=`https://api.github.com/repos/${c.repo}/contents/${path}?ref=${c.branch||'main'}`;
+  const h={'Accept':'application/vnd.github+json'};
+  if(c.token)h['Authorization']='Bearer '+c.token;
+  const res=await fetch(url,{headers:h});
+  if(!res.ok)throw new Error(`GitHub ${res.status}: ${res.statusText}`);
+  const d=await res.json();
+  return{data:JSON.parse(atob(d.content.replace(/\n/g,''))),sha:d.sha};
+}
+async function ghPut(path,data,sha,msg){
+  const c=getGhCfg(); if(!c.token)throw new Error('Cần nhập GitHub Token');
+  const url=`https://api.github.com/repos/${c.repo}/contents/${path}`;
+  const h={'Accept':'application/vnd.github+json','Authorization':'Bearer '+c.token,'Content-Type':'application/json'};
+  if(!sha){try{const r=await fetch(url+`?ref=${c.branch||'main'}`,{headers:h});if(r.ok){const d=await r.json();sha=d.sha;}}catch(e){}}
+  const body={message:msg||'Update',content:btoa(unescape(encodeURIComponent(JSON.stringify(data,null,2)))),branch:c.branch||'main'};
+  if(sha)body.sha=sha;
+  const res=await fetch(url,{method:'PUT',headers:h,body:JSON.stringify(body)});
+  if(!res.ok){const e=await res.json();throw new Error(e.message||res.statusText);}
+}
+
+async function ghPullExams(){
+  setGhStatus('Đang tải...','loading');
+  try{
+    const c=getGhCfg();
+    const{data}=await ghFetch(c.path||'exams.json');
+    let count=0;
+    for(const id in data){const ex=data[id];if(!ex.cfg||!ex.key||!ex.scoring||!ex.name)throw new Error(`Đề "${id}" thiếu trường`);count++;}
+    Object.assign(exams,data);saveAll();renderExamList();
+    setGhStatus(`✓ Đã tải ${count} đề`,'ok');showToast('Đã tải từ GitHub!');
+  }catch(e){setGhStatus('Lỗi: '+e.message.slice(0,36),'err');showToast('❌ '+e.message.slice(0,80));}
+}
+async function ghPushExams(){
+  setGhStatus('Đang lưu...','loading');
+  try{
+    const c=getGhCfg();
+    await ghPut(c.path||'exams.json',exams,null,`Update exams — ${new Date().toLocaleString('vi-VN')}`);
+    setGhStatus('✓ Đã lưu đề thi','ok');showToast('Đã lưu đề thi lên GitHub!');
+  }catch(e){setGhStatus('Lỗi: '+e.message.slice(0,36),'err');showToast('❌ '+e.message.slice(0,80));}
+}
+async function ghPullUsers(){
+  try{
+    const c=getGhCfg();
+    const{data}=await ghFetch(c.usersPath||'users.json');
+    users=data; saveUsersLocal(); renderUsersTable();
+    showToast('Đã tải danh sách người dùng!');
+  }catch(e){showToast('❌ '+e.message.slice(0,80));}
+}
+async function ghPushUsers(){
+  try{
+    const c=getGhCfg();
+    await ghPut(c.usersPath||'users.json',users,null,`Update users — ${new Date().toLocaleString('vi-VN')}`);
+    showToast('Đã lưu danh sách người dùng lên GitHub!');
+  }catch(e){showToast('❌ '+e.message.slice(0,80));}
+}
+async function tryLoadUsersFromGH(){
+  try{
+    const c=getGhCfg(); if(!c.repo)return;
+    const{data}=await ghFetch(c.usersPath||'users.json');
+    users=data; saveUsersLocal();
+  }catch(e){/* fall back to local */}
+}
+async function tryPushUsers(){
+  try{await ghPushUsers();}catch(e){}
+}
+
+/* ════════ USER MANAGEMENT UI ════════ */
+function renderUsersTable(){
+  const area=document.getElementById('users-table-area');
+  const ids=Object.keys(users);
+  if(ids.length===0){area.innerHTML='<p style="color:var(--hint);font-size:13px">Chưa có người dùng nào.</p>';return;}
+  const roleLabel={admin:'Admin',teacher:'Giáo viên',student:'Học sinh'};
+  let h=`<table class="utbl"><thead><tr><th>Tên đăng nhập</th><th>Họ tên</th><th>Role</th><th>Ngày tạo</th><th></th></tr></thead><tbody>`;
+  ids.forEach(uname=>{
+    const u=users[uname];
+    h+=`<tr>
+      <td><b>${esc(uname)}</b></td>
+      <td>${esc(u.fullname||'')}</td>
+      <td>
+        <select onchange="changeUserRole('${uname}',this.value)">
+          ${['student','teacher','admin'].map(r=>`<option value="${r}"${u.role===r?' selected':''}>${roleLabel[r]}</option>`).join('')}
+        </select>
+      </td>
+      <td style="color:var(--hint);font-size:12px">${u.createdAt?u.createdAt.slice(0,10):'—'}</td>
+      <td>${uname!==currentUser.username?`<button class="btn btn-red" style="font-size:12px;padding:5px 10px" onclick="deleteUser('${uname}')">Xoá</button>`:''}</td>
+    </tr>`;
+  });
+  h+='</tbody></table>';
+  area.innerHTML=h;
+}
+function changeUserRole(uname,role){
+  if(!users[uname])return;
+  users[uname].role=role; saveUsersLocal();
+  showToast(`Đã đổi role ${uname} → ${role}`);
+}
+function deleteUser(uname){
+  if(!confirm(`Xoá tài khoản "${uname}"?`))return;
+  delete users[uname]; saveUsersLocal(); renderUsersTable();
+  showToast('Đã xoá tài khoản.');
+}
+
+/* ════════ LOCAL PERSISTENCE ════════ */
+function saveAll(){try{localStorage.setItem('phanmem_exams',JSON.stringify(exams));}catch(e){}}
+function loadAll(){try{const r=localStorage.getItem('phanmem_exams');if(r)exams=JSON.parse(r);}catch(e){exams={};}}
+function saveUsersLocal(){try{localStorage.setItem('phanmem_users',JSON.stringify(users));}catch(e){}}
+function loadUsersLocal(){try{const r=localStorage.getItem('phanmem_users');if(r)users=JSON.parse(r);}catch(e){users={};}}
+
+function exportAllExams(){
+  const blob=new Blob([JSON.stringify(exams,null,2)],{type:'application/json'});
+  const url=URL.createObjectURL(blob);const a=document.createElement('a');
+  a.href=url;a.download='de-thi-'+new Date().toISOString().slice(0,10)+'.json';a.click();
+  URL.revokeObjectURL(url);showToast('Đã lưu file!');
+}
+function importExams(){
+  const inp=document.createElement('input');inp.type='file';inp.accept='.json';
+  inp.onchange=e=>{
+    const f=e.target.files[0];if(!f)return;
+    const r=new FileReader();
+    r.onload=ev=>{
+      try{
+        const data=JSON.parse(ev.target.result);
+        if(typeof data!=='object'||Array.isArray(data))throw new Error('File phải là JSON object');
+        let count=0;
+        for(const id in data){const ex=data[id];if(!ex.cfg||!ex.key||!ex.scoring||!ex.name)throw new Error(`Đề "${id}" thiếu trường`);count++;}
+        Object.assign(exams,data);saveAll();renderExamList();showToast('Đã tải '+count+' đề!');
+      }catch(err){showToast('❌ '+err.message);}
     };
     r.readAsText(f);
   };
   inp.click();
 }
 
-/* ════════════════════════════════════════
-   TABS
-════════════════════════════════════════ */
-function switchTab(tab, btn) {
+/* ════════ TABS ════════ */
+function switchTab(tab,btn){
+  // Guard: student can't access creator/admin
+  const r=currentUser?.role;
+  if(tab==='creator'&&r==='student'){showToast('Bạn không có quyền truy cập.');return;}
+  if(tab==='admin'&&r!=='admin'){showToast('Chỉ Admin mới có quyền truy cập.');return;}
   document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
   document.querySelectorAll('.htab').forEach(b=>b.classList.remove('active'));
   document.getElementById('panel-'+tab).classList.add('active');
-  if (btn) btn.classList.add('active');
-  const onSheet = tab==='sheet';
-  const showBar = onSheet && currentExamId && !submitted;
-  document.getElementById('bbar').style.display = showBar ? 'flex' : 'none';
-  document.getElementById('hprog').style.display = showBar ? 'inline-flex' : 'none';
+  if(btn)btn.classList.add('active');
+  const onSheet=tab==='sheet';
+  const showBar=onSheet&&currentExamId&&!submitted;
+  document.getElementById('bbar').style.display=showBar?'flex':'none';
+  document.getElementById('hprog').style.display=showBar?'inline-flex':'none';
+  if(tab==='admin')renderUsersTable();
 }
 
-/* ════════════════════════════════════════
-   EXAM LIST
-════════════════════════════════════════ */
-function renderExamList() {
-  const area = document.getElementById('exam-list-area');
-  const ids = Object.keys(exams);
-  if (ids.length === 0) {
-    area.innerHTML = '<p style="color:var(--hint);font-size:13px;padding:20px 0 10px;text-align:center">Chưa có đề thi nào. Nhấn <b style="color:var(--text)">+ Tạo đề mới</b> để bắt đầu.</p>';
-    return;
+/* ════════ EXAM LIST ════════ */
+function renderExamList(){
+  const area=document.getElementById('exam-list-area');
+  const ids=Object.keys(exams);
+  const canEdit=currentUser&&currentUser.role!=='student';
+  if(ids.length===0){
+    area.innerHTML='<p style="color:var(--hint);font-size:14px;padding:20px 0 10px;text-align:center">Chưa có đề thi nào.</p>';return;
   }
-  area.innerHTML = '<div class="exam-list">' + ids.map(id => {
-    const ex = exams[id];
-    const parts = [ex.cfg.tn>0?`${ex.cfg.tn} TN`:'', ex.cfg.ds>0?`${ex.cfg.ds} ĐS`:'', ex.cfg.tln>0?`${ex.cfg.tln} TLN`:''].filter(Boolean).join(' · ');
-    return `<div class="exam-card" id="ec-${id}">
+  area.innerHTML='<div class="exam-list">'+ids.map(id=>{
+    const ex=exams[id];
+    const parts=[ex.cfg.tn>0?ex.cfg.tn+' TN':'',ex.cfg.ds>0?ex.cfg.ds+' ĐS':'',ex.cfg.tln>0?ex.cfg.tln+' TLN':''].filter(Boolean).join(' · ');
+    return`<div class="exam-card">
       <div class="exam-card-info">
         <div class="exam-card-name">${esc(ex.name)}</div>
-        <div class="exam-card-meta">${parts} &nbsp;·&nbsp; ${scoringLabel(ex.scoring)}</div>
+        <div class="exam-card-meta">${parts} · TN:${fmt(ex.scoring.tn)}đ · ĐS max:${fmt(ex.scoring.ds[4])}đ · TLN:${fmt(ex.scoring.tln)}đ</div>
       </div>
       <div class="exam-card-actions">
         <button class="btn btn-green" onclick="selectExamAndStart('${id}')">Làm bài →</button>
-        <button class="btn btn-ghost" style="font-size:12px" onclick="editExam('${id}')">Sửa</button>
-        <button class="btn btn-ghost" style="font-size:12px;color:var(--red);border-color:var(--red-bd)" onclick="askDelete('${id}')">Xoá</button>
+        ${canEdit?`<button class="btn btn-ghost" style="font-size:13px" onclick="editExam('${id}')">Sửa</button><button class="btn btn-ghost" style="font-size:13px;color:var(--red);border-color:var(--red-bd)" onclick="askDelete('${id}')">Xoá</button>`:''}
       </div>
     </div>`;
-  }).join('') + '</div>';
+  }).join('')+'</div>';
 }
 
-function scoringLabel(sc) {
-  return `TN:${fmt(sc.tn)}đ · TLN:${fmt(sc.tln)}đ · ĐS max:${fmt(sc.ds[4])}đ`;
+function newExam(){
+  if(currentUser?.role==='student'){showToast('Không có quyền.');return;}
+  editingExamId=null;
+  document.getElementById('ex-name').value='';
+  document.getElementById('ex-tn').value=12;
+  document.getElementById('ex-ds').value=4;
+  document.getElementById('ex-tln').value=6;
+  document.getElementById('creator-card-title').textContent='Tạo đề thi mới';
+  document.getElementById('creator-key-area').style.display='none';
+  creatorKey={tn:{},ds:{},tln:{}};setScoringMode('default');
+  switchTab('creator',document.getElementById('tab-creator-btn'));
 }
-
-function newExam() {
-  editingExamId = null;
-  document.getElementById('ex-name').value = '';
-  document.getElementById('ex-tn').value = 12;
-  document.getElementById('ex-ds').value = 4;
-  document.getElementById('ex-tln').value = 6;
-  document.getElementById('creator-card-title').textContent = 'Tạo đề thi mới';
-  document.getElementById('creator-key-area').style.display = 'none';
-  creatorKey = { tn:{}, ds:{}, tln:{} };
-  setScoringMode('default');
-  switchTab('creator', document.getElementById('tab-creator-btn'));
-}
-
-function editExam(id) {
-  editingExamId = id;
-  const ex = exams[id];
-  document.getElementById('ex-name').value = ex.name;
-  document.getElementById('ex-tn').value = ex.cfg.tn;
-  document.getElementById('ex-ds').value = ex.cfg.ds;
-  document.getElementById('ex-tln').value = ex.cfg.tln;
-  document.getElementById('creator-card-title').textContent = 'Chỉnh sửa: ' + ex.name;
-  document.getElementById('creator-key-area').style.display = 'none';
-  creatorKey = JSON.parse(JSON.stringify(ex.key));
-  // restore scoring mode
-  scoringMode = ex.scoringMode || 'default';
-  setScoringMode(scoringMode);
-  if (scoringMode === 'custom') {
-    document.getElementById('sc-tn').value = ex.scoring.tn;
-    document.getElementById('sc-tln-pt').value = ex.scoring.tln;
-    document.getElementById('sc-ds4').value = ex.scoring.ds[4];
-    document.getElementById('sc-ds3').value = ex.scoring.ds[3];
-    document.getElementById('sc-ds2').value = ex.scoring.ds[2];
-    document.getElementById('sc-ds1').value = ex.scoring.ds[1];
+function editExam(id){
+  if(currentUser?.role==='student'){showToast('Không có quyền.');return;}
+  editingExamId=id;const ex=exams[id];
+  document.getElementById('ex-name').value=ex.name;
+  document.getElementById('ex-tn').value=ex.cfg.tn;
+  document.getElementById('ex-ds').value=ex.cfg.ds;
+  document.getElementById('ex-tln').value=ex.cfg.tln;
+  document.getElementById('creator-card-title').textContent='Chỉnh sửa: '+ex.name;
+  document.getElementById('creator-key-area').style.display='none';
+  creatorKey=JSON.parse(JSON.stringify(ex.key));
+  scoringMode=ex.scoringMode||'default';setScoringMode(scoringMode);
+  if(scoringMode==='custom'){
+    document.getElementById('sc-tn').value=ex.scoring.tn;
+    document.getElementById('sc-tln-pt').value=ex.scoring.tln;
+    document.getElementById('sc-ds4').value=ex.scoring.ds[4];
+    document.getElementById('sc-ds3').value=ex.scoring.ds[3];
+    document.getElementById('sc-ds2').value=ex.scoring.ds[2];
+    document.getElementById('sc-ds1').value=ex.scoring.ds[1];
   }
-  switchTab('creator', document.getElementById('tab-creator-btn'));
+  switchTab('creator',document.getElementById('tab-creator-btn'));
 }
+function askDelete(id){deleteTargetId=id;document.getElementById('del-modal').classList.add('open');}
+function confirmDelete(){if(deleteTargetId){delete exams[deleteTargetId];saveAll();renderExamList();}closeModal('del-modal');showToast('Đã xoá.');}
+function closeModal(id){document.getElementById(id).classList.remove('open');}
 
-function askDelete(id) {
-  deleteTargetId = id;
-  document.getElementById('del-modal').classList.add('open');
+/* ════════ CREATOR ════════ */
+function initCreator(){
+  const tn=Math.max(0,parseInt(document.getElementById('ex-tn').value)||0);
+  const ds=Math.max(0,parseInt(document.getElementById('ex-ds').value)||0);
+  const tln=Math.max(0,parseInt(document.getElementById('ex-tln').value)||0);
+  if(tn+ds+tln===0){showToast('Nhập ít nhất 1 câu.');return;}
+  buildKeyInputs(tn,ds,tln);
+  document.getElementById('creator-key-area').style.display='block';
+  document.getElementById('sc-tn-row').style.display=tn>0?'':'none';
+  document.getElementById('sc-tln-row').style.display=tln>0?'':'none';
+  restoreCreatorKeyUI();
 }
-function confirmDelete() {
-  if (deleteTargetId) { delete exams[deleteTargetId]; saveAll(); renderExamList(); }
-  closeModal('del-modal');
-  showToast('Đã xoá đề thi.');
+function setScoringMode(mode){
+  scoringMode=mode;
+  document.getElementById('sc-def-btn').classList.toggle('active',mode==='default');
+  document.getElementById('sc-cus-btn').classList.toggle('active',mode==='custom');
+  document.getElementById('sc-def-info').style.display=mode==='default'?'block':'none';
+  document.getElementById('sc-cus-area').style.display=mode==='custom'?'block':'none';
 }
-function closeModal(id) { document.getElementById(id).classList.remove('open'); }
-
-/* ════════════════════════════════════════
-   CREATOR
-════════════════════════════════════════ */
-function initCreator() {
-  const tn  = Math.max(0, parseInt(document.getElementById('ex-tn').value)  || 0);
-  const ds  = Math.max(0, parseInt(document.getElementById('ex-ds').value)  || 0);
-  const tln = Math.max(0, parseInt(document.getElementById('ex-tln').value) || 0);
-  if (tn+ds+tln === 0) { showToast('Nhập ít nhất 1 câu hỏi.'); return; }
-  buildKeyInputs(tn, ds, tln);
-  document.getElementById('creator-key-area').style.display = 'block';
-  document.getElementById('sc-tn-row').style.display  = tn>0  ? '' : 'none';
-  document.getElementById('sc-tln-row').style.display = tln>0 ? '' : 'none';
-  // restore saved key
-  restoreCreatorKeyUI(tn, ds, tln);
+function getScoring(){
+  if(scoringMode==='default')return{tn:0.25,tln:0.5,ds:[0,0.1,0.25,0.5,1]};
+  return{tn:parseFloat(document.getElementById('sc-tn').value)||0,tln:parseFloat(document.getElementById('sc-tln-pt').value)||0,
+    ds:[0,parseFloat(document.getElementById('sc-ds1').value)||0,parseFloat(document.getElementById('sc-ds2').value)||0,parseFloat(document.getElementById('sc-ds3').value)||0,parseFloat(document.getElementById('sc-ds4').value)||0]};
 }
-
-function setScoringMode(mode) {
-  scoringMode = mode;
-  document.getElementById('sc-def-btn').classList.toggle('active', mode==='default');
-  document.getElementById('sc-cus-btn').classList.toggle('active', mode==='custom');
-  document.getElementById('sc-def-info').style.display  = mode==='default' ? 'block' : 'none';
-  document.getElementById('sc-cus-area').style.display  = mode==='custom'  ? 'block' : 'none';
-}
-
-function getScoring() {
-  if (scoringMode==='default') return { tn:0.25, tln:0.5, ds:[0,0.1,0.25,0.5,1] };
-  return {
-    tn:  parseFloat(document.getElementById('sc-tn').value)||0,
-    tln: parseFloat(document.getElementById('sc-tln-pt').value)||0,
-    ds: [0,
-      parseFloat(document.getElementById('sc-ds1').value)||0,
-      parseFloat(document.getElementById('sc-ds2').value)||0,
-      parseFloat(document.getElementById('sc-ds3').value)||0,
-      parseFloat(document.getElementById('sc-ds4').value)||0,
-    ]
-  };
-}
-
-/* KEY INPUTS */
-function buildKeyInputs(tn, ds, tln) {
-  buildKeyTN(tn);
-  buildKeyDS(tn, ds);
-  buildKeyTLN(tn, ds, tln);
-}
-
-function buildKeyTN(n) {
-  const sec = document.getElementById('key-tn-sec');
-  if (n===0){sec.innerHTML='';return;}
+function buildKeyInputs(tn,ds,tln){buildKeyTN(tn);buildKeyDS(tn,ds);buildKeyTLN(tn,ds,tln);}
+function buildKeyTN(n){
+  const sec=document.getElementById('key-tn-sec');if(n===0){sec.innerHTML='';return;}
   let h=`<div class="sec-hd"><span class="stag">Trắc nghiệm</span><div class="sline"></div><span class="sinfo">${n} câu</span></div><div class="tn-grid">`;
-  for(let i=1;i<=n;i++){
-    h+=`<div class="tn-item" id="ktn-${i}"><div class="qlbl">Câu ${i}</div><div class="choices">`;
-    ['A','B','C','D'].forEach(l=>{h+=`<button class="cbtn" onclick="selectKeyTN(${i},'${l}',this)">${l}</button>`;});
-    h+='</div></div>';
-  }
+  for(let i=1;i<=n;i++){h+=`<div class="tn-item" id="ktn-${i}"><div class="qlbl">Câu ${i}</div><div class="choices">`;['A','B','C','D'].forEach(l=>{h+=`<button class="cbtn" onclick="selectKeyTN(${i},'${l}',this)">${l}</button>`;});h+='</div></div>';}
   sec.innerHTML=h+'</div>';
 }
-function selectKeyTN(q,l,btn){
-  btn.closest('.tn-item').querySelectorAll('.cbtn').forEach(b=>b.classList.remove('selected'));
-  btn.classList.add('selected'); creatorKey.tn[q]=l;
-}
-
+function selectKeyTN(q,l,btn){btn.closest('.tn-item').querySelectorAll('.cbtn').forEach(b=>b.classList.remove('selected'));btn.classList.add('selected');creatorKey.tn[q]=l;}
 function buildKeyDS(tnN,n){
-  const sec=document.getElementById('key-ds-sec');
-  if(n===0){sec.innerHTML='';return;}
+  const sec=document.getElementById('key-ds-sec');if(n===0){sec.innerHTML='';return;}
   let h=`<div class="sec-hd"><span class="stag">Đúng – Sai</span><div class="sline"></div><span class="sinfo">${n} câu × 4 ý</span></div><div class="ds-grid">`;
-  for(let i=1;i<=n;i++){
-    h+=`<div class="ds-item"><div class="ds-qlbl">Câu ${tnN+i}</div><div class="ds-rows">`;
-    for(let s=1;s<=4;s++) h+=`<div class="ds-row"><span class="ds-stmt">Ý ${s}</span><div class="ds-btns"><button class="dsbtn" onclick="selectKeyDS(${i},${s},'D',this)">Đ</button><button class="dsbtn" onclick="selectKeyDS(${i},${s},'S',this)">S</button></div></div>`;
-    h+='</div></div>';
-  }
+  for(let i=1;i<=n;i++){h+=`<div class="ds-item"><div class="ds-qlbl">Câu ${tnN+i}</div><div class="ds-rows">`;for(let s=1;s<=4;s++)h+=`<div class="ds-row"><span class="ds-stmt">Ý ${s}</span><div class="ds-btns"><button class="dsbtn" onclick="selectKeyDS(${i},${s},'D',this)">Đ</button><button class="dsbtn" onclick="selectKeyDS(${i},${s},'S',this)">S</button></div></div>`;h+='</div></div>';}
   sec.innerHTML=h+'</div>';
 }
-function selectKeyDS(q,s,val,btn){
-  btn.parentElement.querySelectorAll('.dsbtn').forEach(b=>b.classList.remove('dung','sai'));
-  btn.classList.add(val==='D'?'dung':'sai');
-  if(!creatorKey.ds[q]) creatorKey.ds[q]={};
-  creatorKey.ds[q][s]=val;
-}
-
+function selectKeyDS(q,s,val,btn){btn.parentElement.querySelectorAll('.dsbtn').forEach(b=>b.classList.remove('dung','sai'));btn.classList.add(val==='D'?'dung':'sai');if(!creatorKey.ds[q])creatorKey.ds[q]={};creatorKey.ds[q][s]=val;}
 function buildKeyTLN(tnN,dsN,n){
-  const sec=document.getElementById('key-tln-sec');
-  if(n===0){sec.innerHTML='';return;}
-  const off=tnN+dsN;
-  let h=`<div class="sec-hd"><span class="stag">Trả lời ngắn</span><div class="sline"></div><span class="sinfo">${n} câu</span></div><div class="tln-grid">`;
-  for(let i=1;i<=n;i++) h+=`<div class="tln-item"><div class="qlbl">Câu ${off+i}</div><input class="tlninput" type="text" maxlength="5" placeholder="—" oninput="handleKeyTLN(${i},this)" onkeypress="return /[0-9,\\-]/.test(event.key)"></div>`;
+  const sec=document.getElementById('key-tln-sec');if(n===0){sec.innerHTML='';return;}
+  const off=tnN+dsN;let h=`<div class="sec-hd"><span class="stag">Trả lời ngắn</span><div class="sline"></div><span class="sinfo">${n} câu</span></div><div class="tln-grid">`;
+  for(let i=1;i<=n;i++)h+=`<div class="tln-item"><div class="qlbl">Câu ${off+i}</div><input class="tlninput" type="text" maxlength="5" placeholder="—" oninput="handleKeyTLN(${i},this)" onkeypress="return /[0-9,\\-]/.test(event.key)"></div>`;
   sec.innerHTML=h+'</div>';
 }
-function handleKeyTLN(q,input){
-  let val=input.value; const m=val.startsWith('-');
-  val=(m?'-':'')+val.replace(/[^0-9,]/g,'');
-  if((val.match(/,/g)||[]).length>1){input.value=creatorKey.tln[q]||'';return;}
-  if(val.length>5)val=val.slice(0,5);
-  input.value=val; creatorKey.tln[q]=val;
-  input.classList.toggle('has-val',val.length>0);
+function handleKeyTLN(q,input){let val=input.value;const m=val.startsWith('-');val=(m?'-':'')+val.replace(/[^0-9,]/g,'');if((val.match(/,/g)||[]).length>1){input.value=creatorKey.tln[q]||'';return;}if(val.length>5)val=val.slice(0,5);input.value=val;creatorKey.tln[q]=val;input.classList.toggle('has-val',val.length>0);}
+function restoreCreatorKeyUI(){
+  for(const q in creatorKey.tn){const item=document.getElementById(`ktn-${q}`);if(item)item.querySelectorAll('.cbtn').forEach(b=>{if(b.textContent===creatorKey.tn[q])b.classList.add('selected');});}
+  for(const q in creatorKey.ds){for(const s in creatorKey.ds[q]){const val=creatorKey.ds[q][s];const items=document.querySelectorAll('#key-ds-sec .ds-item');const item=items[parseInt(q)-1];if(!item)continue;const row=item.querySelectorAll('.ds-row')[parseInt(s)-1];if(!row)continue;row.querySelectorAll('.dsbtn').forEach(b=>{if((val==='D'&&b.textContent==='Đ')||(val==='S'&&b.textContent==='S'))b.classList.add(val==='D'?'dung':'sai');});}}
+  const tlnInputs=document.querySelectorAll('#key-tln-sec .tlninput');for(const q in creatorKey.tln){const inp=tlnInputs[parseInt(q)-1];if(inp){inp.value=creatorKey.tln[q];inp.classList.add('has-val');}}
 }
-
-function restoreCreatorKeyUI(tn,ds,tln){
-  for(const q in creatorKey.tn){
-    const item=document.getElementById(`ktn-${q}`);
-    if(item) item.querySelectorAll('.cbtn').forEach(b=>{if(b.textContent===creatorKey.tn[q])b.classList.add('selected');});
-  }
-  for(const q in creatorKey.ds){
-    for(const s in creatorKey.ds[q]){
-      const val=creatorKey.ds[q][s];
-      const items=document.querySelectorAll('#key-ds-sec .ds-item');
-      const item=items[parseInt(q)-1]; if(!item)continue;
-      const row=item.querySelectorAll('.ds-row')[parseInt(s)-1]; if(!row)continue;
-      row.querySelectorAll('.dsbtn').forEach(b=>{if((val==='D'&&b.textContent==='Đ')||(val==='S'&&b.textContent==='S'))b.classList.add(val==='D'?'dung':'sai');});
-    }
-  }
-  const tlnInputs=document.querySelectorAll('#key-tln-sec .tlninput');
-  for(const q in creatorKey.tln){
-    const inp=tlnInputs[parseInt(q)-1];
-    if(inp){inp.value=creatorKey.tln[q];inp.classList.add('has-val');}
-  }
-}
-
 function finalizeExam(){
   const tn=parseInt(document.getElementById('ex-tn').value)||0;
   const ds=parseInt(document.getElementById('ex-ds').value)||0;
   const tln=parseInt(document.getElementById('ex-tln').value)||0;
   const total=tn+ds*4+tln;
   const filled=Object.keys(creatorKey.tn).length+Object.values(creatorKey.ds).reduce((a,v)=>a+Object.keys(v).length,0)+Object.keys(creatorKey.tln).length;
-  if(filled<total&&!confirm(`Còn ${total-filled} ô đáp án chưa điền. Vẫn lưu?`))return;
+  if(filled<total&&!confirm(`Còn ${total-filled} ô chưa điền. Vẫn lưu?`))return;
   const name=document.getElementById('ex-name').value.trim()||'Đề thi';
   const id=editingExamId||('ex_'+Date.now());
   exams[id]={id,name,cfg:{tn,ds,tln},key:JSON.parse(JSON.stringify(creatorKey)),scoring:getScoring(),scoringMode};
-  saveAll(); renderExamList();
+  saveAll();renderExamList();
   document.getElementById('creator-key-area').style.display='none';
-  showToast(editingExamId?'Đã cập nhật đề thi!':'Đề thi đã tạo xong!');
+  showToast(editingExamId?'Đã cập nhật!':'Đề thi đã tạo xong!');
   editingExamId=null;
-  switchTab('exams',document.querySelector('.htab'));
+  switchTab('exams',document.getElementById('tab-exams-btn'));
 }
+function resetCreator(){creatorKey={tn:{},ds:{},tln:{}};document.getElementById('creator-key-area').style.display='none';initCreator();}
 
-function resetCreator(){
-  creatorKey={tn:{},ds:{},tln:{}};
-  document.getElementById('creator-key-area').style.display='none';
-  initCreator();
-}
-
-/* ════════════════════════════════════════
-   SHEET
-════════════════════════════════════════ */
+/* ════════ SHEET ════════ */
 function selectExamAndStart(id){
-  currentExamId=id; sheet={tn:{},ds:{},tln:{}}; submitted=false;
+  currentExamId=id;sheet={tn:{},ds:{},tln:{}};submitted=false;
   document.getElementById('score-screen').style.display='none';
   buildSheet();
-  switchTab('sheet',document.getElementById('tab-sheet-btn'));
-}
-
-function buildSheet(){
-  const ex=exams[currentExamId]; if(!ex)return;
-  const {cfg,scoring}=ex;
-  buildSheetTN(cfg.tn,scoring);
-  buildSheetDS(cfg.tn,cfg.ds,scoring);
-  buildSheetTLN(cfg.tn,cfg.ds,cfg.tln,scoring);
-  document.getElementById('no-exam-msg').style.display='none';
-  document.getElementById('sheet-area').style.display='block';
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.htab').forEach(b=>b.classList.remove('active'));
+  document.getElementById('panel-sheet').classList.add('active');
+  document.getElementById('tab-sheet-btn').classList.add('active');
   document.getElementById('bbar').style.display='flex';
   document.getElementById('hprog').style.display='inline-flex';
+}
+function buildSheet(){
+  const ex=exams[currentExamId];if(!ex)return;
+  const{cfg,scoring,name}=ex;
+  document.getElementById('eb-name').textContent=name;
+  const parts=[cfg.tn>0?cfg.tn+' câu trắc nghiệm':'',cfg.ds>0?cfg.ds+' câu đúng–sai':'',cfg.tln>0?cfg.tln+' câu trả lời ngắn':''].filter(Boolean).join(' · ');
+  document.getElementById('eb-meta').textContent=parts;
+  const c=getGhCfg();const el=document.getElementById('eb-link');
+  if(c.repo&&c.path){el.href=`https://github.com/${c.repo}/blob/${c.branch||'main'}/${c.path}`;el.style.display='inline-flex';}else el.style.display='none';
+  document.getElementById('exam-banner').style.display='flex';
+  buildSheetTN(cfg.tn,scoring);buildSheetDS(cfg.tn,cfg.ds,scoring);buildSheetTLN(cfg.tn,cfg.ds,cfg.tln,scoring);
+  document.getElementById('no-exam-msg').style.display='none';
+  document.getElementById('sheet-area').style.display='block';
   updateProgress();
 }
-
 function buildSheetTN(n,sc){
-  const sec=document.getElementById('sheet-tn-sec');
-  if(n===0){sec.innerHTML='';return;}
+  const sec=document.getElementById('sheet-tn-sec');if(n===0){sec.innerHTML='';return;}
   let h=`<div class="sec-hd"><span class="stag">Trắc nghiệm</span><div class="sline"></div><span class="sinfo">${n} câu · ${fmt(sc.tn)}đ/câu</span></div><div class="tn-grid">`;
-  for(let i=1;i<=n;i++){
-    h+=`<div class="tn-item" id="tn-item-${i}"><div class="qlbl">Câu ${i}</div><div class="choices">`;
-    ['A','B','C','D'].forEach(l=>{h+=`<button class="cbtn" onclick="selTN(${i},'${l}',this)">${l}</button>`;});
-    h+='</div></div>';
-  }
+  for(let i=1;i<=n;i++){h+=`<div class="tn-item" id="tn-item-${i}"><div class="qlbl">Câu ${i}</div><div class="choices">`;['A','B','C','D'].forEach(l=>{h+=`<button class="cbtn" onclick="selTN(${i},'${l}',this)">${l}</button>`;});h+='</div></div>';}
   sec.innerHTML=h+'</div>';
 }
-function selTN(q,l,btn){
-  if(submitted)return;
-  btn.closest('.tn-item').querySelectorAll('.cbtn').forEach(b=>b.classList.remove('selected'));
-  btn.classList.add('selected'); sheet.tn[q]=l;
-  btn.closest('.tn-item').classList.add('answered');
-  updateProgress();
-}
-
+function selTN(q,l,btn){if(submitted)return;btn.closest('.tn-item').querySelectorAll('.cbtn').forEach(b=>b.classList.remove('selected'));btn.classList.add('selected');sheet.tn[q]=l;btn.closest('.tn-item').classList.add('answered');updateProgress();}
 function buildSheetDS(tnN,n,sc){
-  const sec=document.getElementById('sheet-ds-sec');
-  if(n===0){sec.innerHTML='';return;}
+  const sec=document.getElementById('sheet-ds-sec');if(n===0){sec.innerHTML='';return;}
   const info=`4→${fmt(sc.ds[4])}đ · 3→${fmt(sc.ds[3])}đ · 2→${fmt(sc.ds[2])}đ · 1→${fmt(sc.ds[1])}đ`;
   let h=`<div class="sec-hd"><span class="stag">Đúng – Sai</span><div class="sline"></div><span class="sinfo">${info}</span></div><div class="ds-grid">`;
-  for(let i=1;i<=n;i++){
-    h+=`<div class="ds-item" id="ds-item-${i}"><div class="ds-qlbl">Câu ${tnN+i}</div><div class="ds-rows">`;
-    for(let s=1;s<=4;s++) h+=`<div class="ds-row" id="ds-row-${i}-${s}"><span class="ds-stmt">Ý ${s}</span><div class="ds-btns"><button class="dsbtn" onclick="selDS(${i},${s},'D',this)">Đ</button><button class="dsbtn" onclick="selDS(${i},${s},'S',this)">S</button></div></div>`;
-    h+='</div></div>';
-  }
+  for(let i=1;i<=n;i++){h+=`<div class="ds-item" id="ds-item-${i}"><div class="ds-qlbl">Câu ${tnN+i}</div><div class="ds-rows">`;for(let s=1;s<=4;s++)h+=`<div class="ds-row" id="ds-row-${i}-${s}"><span class="ds-stmt">Ý ${s}</span><div class="ds-btns"><button class="dsbtn" onclick="selDS(${i},${s},'D',this)">Đ</button><button class="dsbtn" onclick="selDS(${i},${s},'S',this)">S</button></div></div>`;h+='</div></div>';}
   sec.innerHTML=h+'</div>';
 }
-function selDS(q,s,val,btn){
-  if(submitted)return;
-  btn.parentElement.querySelectorAll('.dsbtn').forEach(b=>b.classList.remove('dung','sai'));
-  btn.classList.add(val==='D'?'dung':'sai');
-  if(!sheet.ds[q])sheet.ds[q]={};
-  sheet.ds[q][s]=val; updateProgress();
-}
-
+function selDS(q,s,val,btn){if(submitted)return;btn.parentElement.querySelectorAll('.dsbtn').forEach(b=>b.classList.remove('dung','sai'));btn.classList.add(val==='D'?'dung':'sai');if(!sheet.ds[q])sheet.ds[q]={};sheet.ds[q][s]=val;updateProgress();}
 function buildSheetTLN(tnN,dsN,n,sc){
-  const sec=document.getElementById('sheet-tln-sec');
-  if(n===0){sec.innerHTML='';return;}
-  const off=tnN+dsN;
-  let h=`<div class="sec-hd"><span class="stag">Trả lời ngắn</span><div class="sline"></div><span class="sinfo">${n} câu · ${fmt(sc.tln)}đ/câu</span></div><div class="tln-grid">`;
-  for(let i=1;i<=n;i++) h+=`<div class="tln-item" id="tln-item-${i}"><div class="qlbl">Câu ${off+i}</div><input class="tlninput" type="text" maxlength="5" placeholder="—" id="tln-inp-${i}" oninput="handleTLN(${i},this)" onkeypress="return /[0-9,\\-]/.test(event.key)"></div>`;
+  const sec=document.getElementById('sheet-tln-sec');if(n===0){sec.innerHTML='';return;}
+  const off=tnN+dsN;let h=`<div class="sec-hd"><span class="stag">Trả lời ngắn</span><div class="sline"></div><span class="sinfo">${n} câu · ${fmt(sc.tln)}đ/câu</span></div><div class="tln-grid">`;
+  for(let i=1;i<=n;i++)h+=`<div class="tln-item" id="tln-item-${i}"><div class="qlbl">Câu ${off+i}</div><input class="tlninput" type="text" maxlength="5" placeholder="—" id="tln-inp-${i}" oninput="handleTLN(${i},this)" onkeypress="return /[0-9,\\-]/.test(event.key)"></div>`;
   sec.innerHTML=h+'</div>';
 }
-function handleTLN(q,input){
-  if(submitted)return;
-  let val=input.value; const m=val.startsWith('-');
-  val=(m?'-':'')+val.replace(/[^0-9,]/g,'');
-  if((val.match(/,/g)||[]).length>1){input.value=sheet.tln[q]||'';return;}
-  if(val.length>5)val=val.slice(0,5);
-  input.value=val; sheet.tln[q]=val;
-  input.classList.toggle('has-val',val.length>0);
-  updateProgress();
-}
-
-function countAnswered(){
-  const ex=exams[currentExamId]; if(!ex)return{done:0,total:0};
-  const{cfg}=ex; const total=cfg.tn+cfg.ds*4+cfg.tln;
-  let done=Object.keys(sheet.tn).length;
-  for(const q in sheet.ds)done+=Object.keys(sheet.ds[q]).length;
-  for(const q in sheet.tln)if(sheet.tln[q])done++;
-  return{done,total};
-}
-function updateProgress(){
-  const{done,total}=countAnswered();
-  const pct=total===0?0:Math.round(done/total*100);
-  document.getElementById('prog-fill').style.width=pct+'%';
-  document.getElementById('prog-lbl').textContent=`${done} / ${total}`;
-  document.getElementById('hp-done').textContent=done;
-  document.getElementById('hp-total').textContent=total;
-}
-
-function submitExam(){
-  const{done,total}=countAnswered();
-  if(done<total&&!confirm(`Còn ${total-done} câu chưa trả lời. Nộp bài?`))return;
-  submitted=true; grade();
-}
-
+function handleTLN(q,input){if(submitted)return;let val=input.value;const m=val.startsWith('-');val=(m?'-':'')+val.replace(/[^0-9,]/g,'');if((val.match(/,/g)||[]).length>1){input.value=sheet.tln[q]||'';return;}if(val.length>5)val=val.slice(0,5);input.value=val;sheet.tln[q]=val;input.classList.toggle('has-val',val.length>0);updateProgress();}
+function countAnswered(){const ex=exams[currentExamId];if(!ex)return{done:0,total:0};const{cfg}=ex;const total=cfg.tn+cfg.ds*4+cfg.tln;let done=Object.keys(sheet.tn).length;for(const q in sheet.ds)done+=Object.keys(sheet.ds[q]).length;for(const q in sheet.tln)if(sheet.tln[q])done++;return{done,total};}
+function updateProgress(){const{done,total}=countAnswered();const pct=total===0?0:Math.round(done/total*100);document.getElementById('prog-fill').style.width=pct+'%';document.getElementById('prog-lbl').textContent=done+' / '+total;document.getElementById('hp-done').textContent=done;document.getElementById('hp-total').textContent=total;}
+function submitExam(){const{done,total}=countAnswered();if(done<total&&!confirm(`Còn ${total-done} câu chưa trả lời. Nộp bài?`))return;submitted=true;grade();}
 function grade(){
-  const ex=exams[currentExamId]; const{cfg,key,scoring}=ex;
-  let sTN=0,sDS=0,sTLN=0;
-  for(let i=1;i<=cfg.tn;i++){
-    const ok=sheet.tn[i]===key.tn[i]; if(ok)sTN+=scoring.tn;
-    const item=document.getElementById(`tn-item-${i}`); if(!item)continue;
-    item.classList.remove('answered');
-    item.querySelectorAll('.cbtn').forEach(b=>{
-      b.disabled=true;
-      if(b.textContent===key.tn[i])b.classList.add('key-ans');
-      if(b.textContent===sheet.tn[i]&&sheet.tn[i]!==key.tn[i])b.classList.add('wrong-pick');
-    });
-    if(key.tn[i])item.classList.add(ok?'correct':'wrong');
-    const badge=document.createElement('div'); badge.className='qbadge '+(ok?'ok':'no');
-    badge.textContent=ok?`+${fmt(scoring.tn)}đ`:(key.tn[i]?`→ ${key.tn[i]}`:'—');
-    item.appendChild(badge);
-  }
-  for(let i=1;i<=cfg.ds;i++){
-    let correct=0;
-    for(let s=1;s<=4;s++){
-      const isOk=sheet.ds[i]&&sheet.ds[i][s]===(key.ds[i]&&key.ds[i][s]); if(isOk)correct++;
-      const row=document.getElementById(`ds-row-${i}-${s}`); if(!row)continue;
-      row.querySelectorAll('.dsbtn').forEach(b=>{
-        b.disabled=true;
-        if(key.ds[i]&&((key.ds[i][s]==='D'&&b.textContent==='Đ')||(key.ds[i][s]==='S'&&b.textContent==='S')))b.classList.add(key.ds[i][s]==='D'?'dung':'sai');
-      });
-      const dot=document.createElement('div'); dot.className='ds-dot '+(!sheet.ds[i]||!sheet.ds[i][s]?'na':isOk?'ok':'no');
-      row.appendChild(dot);
-    }
-    const pts=scoring.ds[correct]||0; sDS+=pts;
-    const item=document.getElementById(`ds-item-${i}`); if(item){
-      const line=document.createElement('div'); line.className='ds-score-line';
-      line.innerHTML=`<span>${correct}/4 đúng</span><b>+${fmt(pts)}đ</b>`;
-      item.appendChild(line);
-    }
-  }
-  for(let i=1;i<=cfg.tln;i++){
-    const ua=(sheet.tln[i]||'').trim(),ka=(key.tln[i]||'').trim();
-    const ok=ka!==''&&ua===ka; if(ok)sTLN+=scoring.tln;
-    const item=document.getElementById(`tln-item-${i}`);
-    const inp=document.getElementById(`tln-inp-${i}`);
-    if(inp){inp.disabled=true;inp.classList.remove('has-val');}
-    if(item){
-      if(ka)item.classList.add(ok?'correct':'wrong');
-      if(!ok&&ka){const h=document.createElement('div');h.className='qbadge no';h.textContent=`→ ${ka}`;item.appendChild(h);}
-      if(ok){const b=document.createElement('div');b.className='qbadge ok';b.textContent=`+${fmt(scoring.tln)}đ`;item.appendChild(b);}
-    }
-  }
-  const total=+(sTN+sDS+sTLN).toFixed(2);
-  const maxTotal=+(cfg.tn*scoring.tn+cfg.ds*(scoring.ds[4]||0)+cfg.tln*scoring.tln).toFixed(2);
-  document.getElementById('sc-big').textContent=fmt(total)+'đ';
-  document.getElementById('sc-denom').textContent=`/ ${fmt(maxTotal)} điểm tối đa`;
-  document.getElementById('sc-tn-val').textContent=cfg.tn>0?fmt(+sTN.toFixed(2))+'đ':'—';
-  document.getElementById('sc-ds-val').textContent=cfg.ds>0?fmt(+sDS.toFixed(2))+'đ':'—';
-  document.getElementById('sc-tln-val').textContent=cfg.tln>0?fmt(+sTLN.toFixed(2))+'đ':'—';
-  document.getElementById('sb-tn').style.display=cfg.tn>0?'':'none';
-  document.getElementById('sb-ds').style.display=cfg.ds>0?'':'none';
-  document.getElementById('sb-tln').style.display=cfg.tln>0?'':'none';
-  document.getElementById('score-screen').style.display='block';
-  document.getElementById('bbar').style.display='none';
-  document.getElementById('hprog').style.display='none';
+  const ex=exams[currentExamId];const{cfg,key,scoring}=ex;let sTN=0,sDS=0,sTLN=0;
+  for(let i=1;i<=cfg.tn;i++){const ok=sheet.tn[i]===key.tn[i];if(ok)sTN+=scoring.tn;const item=document.getElementById(`tn-item-${i}`);if(!item)continue;item.classList.remove('answered');item.querySelectorAll('.cbtn').forEach(b=>{b.disabled=true;if(b.textContent===key.tn[i])b.classList.add('key-ans');if(b.textContent===sheet.tn[i]&&sheet.tn[i]!==key.tn[i])b.classList.add('wrong-pick');});if(key.tn[i])item.classList.add(ok?'correct':'wrong');const badge=document.createElement('div');badge.className='qbadge '+(ok?'ok':'no');badge.textContent=ok?`+${fmt(scoring.tn)}đ`:(key.tn[i]?`→ ${key.tn[i]}`:'—');item.appendChild(badge);}
+  for(let i=1;i<=cfg.ds;i++){let correct=0;for(let s=1;s<=4;s++){const isOk=sheet.ds[i]&&sheet.ds[i][s]===(key.ds[i]&&key.ds[i][s]);if(isOk)correct++;const row=document.getElementById(`ds-row-${i}-${s}`);if(!row)continue;row.querySelectorAll('.dsbtn').forEach(b=>{b.disabled=true;if(key.ds[i]&&((key.ds[i][s]==='D'&&b.textContent==='Đ')||(key.ds[i][s]==='S'&&b.textContent==='S')))b.classList.add(key.ds[i][s]==='D'?'dung':'sai');});const dot=document.createElement('div');dot.className='ds-dot '+(!sheet.ds[i]||!sheet.ds[i][s]?'na':isOk?'ok':'no');row.appendChild(dot);}const pts=scoring.ds[correct]||0;sDS+=pts;const item=document.getElementById(`ds-item-${i}`);if(item){const line=document.createElement('div');line.className='ds-score-line';line.innerHTML=`<span>${correct}/4 đúng</span><b>+${fmt(pts)}đ</b>`;item.appendChild(line);}}
+  for(let i=1;i<=cfg.tln;i++){const ua=(sheet.tln[i]||'').trim(),ka=(key.tln[i]||'').trim();const ok=ka!==''&&ua===ka;if(ok)sTLN+=scoring.tln;const item=document.getElementById(`tln-item-${i}`);const inp=document.getElementById(`tln-inp-${i}`);if(inp){inp.disabled=true;inp.classList.remove('has-val');}if(item){if(ka)item.classList.add(ok?'correct':'wrong');if(!ok&&ka){const h=document.createElement('div');h.className='qbadge no';h.textContent=`→ ${ka}`;item.appendChild(h);}if(ok){const b=document.createElement('div');b.className='qbadge ok';b.textContent=`+${fmt(scoring.tln)}đ`;item.appendChild(b);}}}
+  const total=+(sTN+sDS+sTLN).toFixed(2);const maxTotal=+(cfg.tn*scoring.tn+cfg.ds*(scoring.ds[4]||0)+cfg.tln*scoring.tln).toFixed(2);
+  document.getElementById('sc-big').textContent=fmt(total)+'đ';document.getElementById('sc-denom').textContent=`/ ${fmt(maxTotal)} điểm tối đa`;
+  document.getElementById('sc-tn-val').textContent=cfg.tn>0?fmt(+sTN.toFixed(2))+'đ':'—';document.getElementById('sc-ds-val').textContent=cfg.ds>0?fmt(+sDS.toFixed(2))+'đ':'—';document.getElementById('sc-tln-val').textContent=cfg.tln>0?fmt(+sTLN.toFixed(2))+'đ':'—';
+  document.getElementById('sb-tn').style.display=cfg.tn>0?'':'none';document.getElementById('sb-ds').style.display=cfg.ds>0?'':'none';document.getElementById('sb-tln').style.display=cfg.tln>0?'':'none';
+  document.getElementById('score-screen').style.display='block';document.getElementById('bbar').style.display='none';document.getElementById('hprog').style.display='none';
   document.getElementById('score-screen').scrollIntoView({behavior:'smooth'});
   lastScore={total,sTN,sDS,sTLN,maxTotal};
 }
-
-function retakeExam(){
-  if(!currentExamId)return;
-  if(!confirm('Xóa bài làm và làm lại?'))return;
-  selectExamAndStart(currentExamId);
-}
-
-function saveSheet(){
-  try{localStorage.setItem('phanmem_sheet_'+currentExamId, JSON.stringify(sheet));showToast('Đã lưu bài làm!');}
-  catch(e){showToast('Không thể lưu.');}
-}
-
+function retakeExam(){if(!currentExamId)return;if(!confirm('Xóa bài làm và làm lại?'))return;selectExamAndStart(currentExamId);}
+function saveSheet(){try{localStorage.setItem('phanmem_sheet_'+currentExamId,JSON.stringify(sheet));showToast('Đã lưu bài làm!');}catch(e){showToast('Không thể lưu.');}}
 function exportResult(){
-  const ex=exams[currentExamId]; if(!ex)return;
-  const{cfg,key,scoring}=ex; const sc=lastScore||{};
+  const ex=exams[currentExamId];if(!ex)return;const{cfg,key,scoring}=ex;const sc=lastScore||{};
   const lines=[`PHIẾU TRẢ LỜI — ${ex.name}`,'='.repeat(44),''];
-  if(cfg.tn>0){
-    lines.push('[ TRẮC NGHIỆM ]');
-    for(let i=1;i<=cfg.tn;i++){const ua=sheet.tn[i]||'—',ka=key.tn[i]||'?',ok=ua===ka;lines.push(`  Câu ${String(i).padStart(2,'0')}: ${ua}  ${ok?'✓':'✗('+ka+')'}  ${ok?'+'+fmt(scoring.tn)+'đ':'0đ'}`);}
-    lines.push(`  → ${fmt(+(sc.sTN||0).toFixed(2))}đ`,'');
-  }
-  if(cfg.ds>0){
-    lines.push('[ ĐÚNG – SAI ]');
-    for(let i=1;i<=cfg.ds;i++){let c=0;for(let s=1;s<=4;s++)if(sheet.ds[i]&&sheet.ds[i][s]===(key.ds[i]&&key.ds[i][s]))c++;lines.push(`  Câu ${cfg.tn+i}: ${c}/4 đúng → +${fmt(scoring.ds[c]||0)}đ`);}
-    lines.push(`  → ${fmt(+(sc.sDS||0).toFixed(2))}đ`,'');
-  }
-  if(cfg.tln>0){
-    lines.push('[ TRẢ LỜI NGẮN ]');
-    for(let i=1;i<=cfg.tln;i++){const ua=(sheet.tln[i]||'').trim(),ka=(key.tln[i]||'').trim(),ok=ka!==''&&ua===ka;lines.push(`  Câu ${String(cfg.tn+cfg.ds+i).padStart(2,'0')}: ${ua||'—'}  ${ok?'✓':'✗('+ka+')'}  ${ok?'+'+fmt(scoring.tln)+'đ':'0đ'}`);}
-    lines.push(`  → ${fmt(+(sc.sTLN||0).toFixed(2))}đ`,'');
-  }
+  if(cfg.tn>0){lines.push('[ TRẮC NGHIỆM ]');for(let i=1;i<=cfg.tn;i++){const ua=sheet.tn[i]||'—',ka=key.tn[i]||'?',ok=ua===ka;lines.push(`  Câu ${String(i).padStart(2,'0')}: ${ua}  ${ok?'✓':'✗('+ka+')'}  ${ok?'+'+fmt(scoring.tn)+'đ':'0đ'}`);}lines.push(`  → ${fmt(+(sc.sTN||0).toFixed(2))}đ`,'');}
+  if(cfg.ds>0){lines.push('[ ĐÚNG – SAI ]');for(let i=1;i<=cfg.ds;i++){let c=0;for(let s=1;s<=4;s++)if(sheet.ds[i]&&sheet.ds[i][s]===(key.ds[i]&&key.ds[i][s]))c++;lines.push(`  Câu ${cfg.tn+i}: ${c}/4 đúng → +${fmt(scoring.ds[c]||0)}đ`);}lines.push(`  → ${fmt(+(sc.sDS||0).toFixed(2))}đ`,'');}
+  if(cfg.tln>0){lines.push('[ TRẢ LỜI NGẮN ]');for(let i=1;i<=cfg.tln;i++){const ua=(sheet.tln[i]||'').trim(),ka=(key.tln[i]||'').trim(),ok=ka!==''&&ua===ka;lines.push(`  Câu ${String(cfg.tn+cfg.ds+i).padStart(2,'0')}: ${ua||'—'}  ${ok?'✓':'✗('+ka+')'}  ${ok?'+'+fmt(scoring.tln)+'đ':'0đ'}`);}lines.push(`  → ${fmt(+(sc.sTLN||0).toFixed(2))}đ`,'');}
   lines.push('='.repeat(44),`TỔNG: ${fmt(+(sc.total||0).toFixed(2))}đ / ${fmt(sc.maxTotal||0)}đ`,'',`Xuất: ${new Date().toLocaleString('vi-VN')}`);
-  const blob=new Blob([lines.join('\n')],{type:'text/plain;charset=utf-8'});
-  const url=URL.createObjectURL(blob); const a=document.createElement('a');
-  a.href=url; a.download=`ket-qua-${new Date().toISOString().slice(0,10)}.txt`; a.click();
-  URL.revokeObjectURL(url); showToast('Đã xuất kết quả!');
+  const blob=new Blob([lines.join('\n')],{type:'text/plain;charset=utf-8'});const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download=`ket-qua-${new Date().toISOString().slice(0,10)}.txt`;a.click();URL.revokeObjectURL(url);showToast('Đã xuất kết quả!');
 }
 
-
-
-/* ════════════════════════════════════════
-   HELPERS
-════════════════════════════════════════ */
-function fmt(n){
-  if(n===undefined||n===null)return'—';
-  const r=+parseFloat(n).toFixed(2);
-  return Number.isInteger(r)?String(r):String(r).replace('.',',');
-}
-function esc(s){ const d=document.createElement('div');d.textContent=s;return d.innerHTML; }
-
+/* ════════ HELPERS ════════ */
+function fmt(n){if(n===undefined||n===null)return'—';const r=+parseFloat(n).toFixed(2);return Number.isInteger(r)?String(r):String(r).replace('.',',');}
+function esc(s){const d=document.createElement('div');d.textContent=s;return d.innerHTML;}
 let toastTimer;
-function showToast(msg){
-  const t=document.getElementById('toast'); t.textContent=msg; t.classList.add('show');
-  clearTimeout(toastTimer); toastTimer=setTimeout(()=>t.classList.remove('show'),2400);
-}
+function showToast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');clearTimeout(toastTimer);toastTimer=setTimeout(()=>t.classList.remove('show'),2600);}
 
-/* ════════════════════════════════════════
-   INIT
-════════════════════════════════════════ */
+/* ════════ INIT ════════ */
 window.addEventListener('DOMContentLoaded',()=>{
-  loadAll();
-  renderExamList();
+  loadUsersLocal();
+  // Try restore session
+  try{
+    const s=JSON.parse(localStorage.getItem('session')||'null');
+    if(s&&s.username&&s.role){
+      currentUser=s;
+      loadAll();renderExamList();loadGhConfig();applyRoleUI();
+      document.getElementById('login-overlay').style.display='none';
+      return;
+    }
+  }catch(e){}
+  // No session — show login
+  document.getElementById('login-overlay').style.display='flex';
 });
 </script>
 </body>
