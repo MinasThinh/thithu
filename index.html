@@ -3,14 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Phiếu Trả Lời 1.0.0</title>
-<style>
-  /* System font stack — no external dependency */
-  @font-face {
-    font-family: 'DisplayFallback';
-    src: local('Georgia'), local('Times New Roman');
-  }
-</style>
+<title>Phiếu Trả Lời 1.0.1</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Noto+Serif:wght@400;500&display=swap" rel="stylesheet">
 <style>
 :root{
   --bg:#F4F2ED;--surface:#FDFCF9;--surface2:#F8F6F1;
@@ -21,8 +15,8 @@
   --red:#C41C1C;--red-bg:#FEF2F2;--red-bd:#FCA5A5;
   --amber:#B45309;--amber-bg:#FFFBEB;
   --r:8px;--rlg:14px;
-  --font: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, 'Helvetica Neue', Arial, sans-serif;
-  --font-display: Georgia, 'Times New Roman', serif;
+  --font: 'Noto Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif;
+  --font-display: 'Noto Serif', Georgia, serif;
 }
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 body{font-family:var(--font);background:var(--bg);color:var(--text);min-height:100vh;font-size:15px;line-height:1.6}
@@ -593,7 +587,10 @@ async function ghFetch(path,cfg){
   const res=await fetch(url,{headers:h});
   if(!res.ok)throw new Error(`GitHub ${res.status}: ${res.statusText}`);
   const d=await res.json();
-  return{data:JSON.parse(atob(d.content.replace(/\n/g,''))),sha:d.sha};
+  const raw=atob(d.content.replace(/\n/g,''));
+    const bytes=Uint8Array.from(raw,c=>c.charCodeAt(0));
+    const decoded=new TextDecoder('utf-8').decode(bytes);
+    return{data:JSON.parse(decoded),sha:d.sha};
 }
 async function ghPut(path,data,sha,msg){
   const c=getGhCfg(); if(!c.token)throw new Error('Cần nhập GitHub Token');
