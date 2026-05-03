@@ -251,7 +251,13 @@ main{max-width:980px;margin:0 auto;padding:28px 22px 110px}
       <button class="lbtn" onclick="doRegister()">Đăng ký tài khoản</button>
     </div>
 
-    <p id="login-loading" style="text-align:center;font-size:13px;color:var(--hint);margin-top:16px;display:none">Đang tải dữ liệu...</p>
+    <p id="login-loading" style="text-align:center;font-size:13px;color:var(--hint);margin-top:16px;display:none">Đang kiểm tra...</p>
+    <div style="margin-top:18px;padding-top:14px;border-top:1px solid var(--border-soft);text-align:center">
+      <p style="font-size:11px;color:var(--hint);line-height:1.7">
+        Lần đầu sử dụng: đăng nhập bằng <b style="color:var(--text)">admin / admin</b><br>
+        Sau đó vào <b style="color:var(--text)">Đề thi → GitHub Sync</b> để kết nối repo
+      </p>
+    </div>
   </div>
 </div>
 
@@ -467,13 +473,18 @@ async function doLogin(){
   const uname=document.getElementById('l-username').value.trim().toLowerCase();
   const pass=document.getElementById('l-password').value;
   if(!uname||!pass){showLoginErr('Vui lòng nhập đầy đủ thông tin.');return;}
+  clearLoginMsg();
+  const loadEl=document.getElementById('login-loading');
+  loadEl.textContent='Đang kiểm tra...'; loadEl.style.display='block';
   const hash=await sha256(pass);
-  // Try loading users from GitHub first, then fall back to local
-  await tryLoadUsersFromGH();
+  // Try GitHub if configured, otherwise use local
+  const c=getGhCfg();
+  if(c.repo&&c.usersPath){await tryLoadUsersFromGH();}
+  loadEl.style.display='none';
   const u=users[uname];
-  if(!u){showLoginErr('Tên đăng nhập không tồn tại.');return;}
+  if(!u){showLoginErr('Tên đăng nhập không tồn tại. (Nếu lần đầu dùng, hãy cấu hình GitHub Sync và thử lại, hoặc đăng ký tài khoản mới.)');return;}
   if(u.passwordHash!==hash){showLoginErr('Mật khẩu không đúng.');return;}
-  if(u.status==='pending'){showLoginErr('Tài khoản chưa được kích hoạt.');return;}
+  if(u.status==='pending'){showLoginErr('Tài khoản đang chờ duyệt.');return;}
   currentUser={username:uname,fullname:u.fullname,role:u.role};
   try{localStorage.setItem('session',JSON.stringify(currentUser));}catch(e){}
   onLoginSuccess();
@@ -673,7 +684,18 @@ function deleteUser(uname){
 function saveAll(){try{localStorage.setItem('phanmem_exams',JSON.stringify(exams));}catch(e){}}
 function loadAll(){try{const r=localStorage.getItem('phanmem_exams');if(r)exams=JSON.parse(r);}catch(e){exams={};}}
 function saveUsersLocal(){try{localStorage.setItem('phanmem_users',JSON.stringify(users));}catch(e){}}
-function loadUsersLocal(){try{const r=localStorage.getItem('phanmem_users');if(r)users=JSON.parse(r);}catch(e){users={};}}
+function loadUsersLocal(){
+  try{const r=localStorage.getItem('phanmem_users');if(r){users=JSON.parse(r);return;}}catch(e){}
+  users={};
+}
+// SHA-256 hash of "admin" — used as default seed only
+const DEFAULT_ADMIN_HASH='8c6976e5b5410415bde908bd4dee15dfb167a9c873fc4bb8a81f6f2ab448a918';
+async function ensureDefaultAdmin(){
+  if(Object.keys(users).length===0){
+    users['admin']={username:'admin',fullname:'Admin',passwordHash:DEFAULT_ADMIN_HASH,role:'admin',status:'active',createdAt:new Date().toISOString()};
+    saveUsersLocal();
+  }
+}
 
 function exportAllExams(){
   const blob=new Blob([JSON.stringify(exams,null,2)],{type:'application/json'});
@@ -930,16 +952,20 @@ let toastTimer;
 function showToast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');clearTimeout(toastTimer);toastTimer=setTimeout(()=>t.classList.remove('show'),2600);}
 
 /* ════════ INIT ════════ */
-window.addEventListener('DOMContentLoaded',()=>{
+window.addEventListener('DOMContentLoaded',async()=>{
   loadUsersLocal();
+  await ensureDefaultAdmin();
   // Try restore session
   try{
     const s=JSON.parse(localStorage.getItem('session')||'null');
     if(s&&s.username&&s.role){
-      currentUser=s;
-      loadAll();renderExamList();loadGhConfig();applyRoleUI();
-      document.getElementById('login-overlay').style.display='none';
-      return;
+      // Re-validate session user still exists
+      if(users[s.username]&&users[s.username].status==='active'){
+        currentUser=s;
+        loadAll();renderExamList();loadGhConfig();applyRoleUI();
+        document.getElementById('login-overlay').style.display='none';
+        return;
+      }
     }
   }catch(e){}
   // No session — show login
