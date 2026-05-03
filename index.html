@@ -203,9 +203,9 @@ main{max-width:1400px;margin:0 auto;padding:28px 22px 110px}
 .bbar-actions{display:flex;gap:8px}
 
 /* MODAL */
-.cmodal-bg{display:none;position:fixed;inset:0;background:rgba(0,0,0,.35);z-index:500;align-items:center;justify-content:center}
-.cmodal-bg.open{display:flex}
-.cmodal{background:var(--surface);border:1px solid var(--border);border-radius:var(--rlg);padding:26px;max-width:480px;width:92%;max-height:90vh;overflow-y:auto}
+.cmodal-bg{display:none;position:fixed;inset:0;background:rgba(0,0,0,.35);z-index:1050;align-items:center;justify-content:center;pointer-events:none}
+.cmodal-bg.open{display:flex;pointer-events:auto}
+.cmodal{display:block;background:var(--surface);border:1px solid var(--border);border-radius:var(--rlg);padding:26px;max-width:480px;width:92%;max-height:90vh;overflow-y:auto}
 .cmodal-title{font-family:var(--font-display);font-size:17px;font-weight:500;margin-bottom:14px}
 
 /* USER DROPDOWN */
@@ -622,6 +622,7 @@ async function doRegister(){
 }
 
 async function doLogout(){
+  closeDropdown();
   if(!await bsConfirm('Đăng xuất','Bạn có chắc muốn đăng xuất?','Đăng xuất','btn-dark'))return;
   currentUser=null;
   try{localStorage.removeItem('session');}catch(e){}
@@ -1194,9 +1195,10 @@ document.addEventListener('click',e=>{
   const dd=document.getElementById('user-dropdown');
   if(dd&&!dd.contains(e.target))document.getElementById('udrop-menu').classList.remove('open');
 });
+function closeDropdown(){document.getElementById('udrop-menu').classList.remove('open');}
 
 function openProfileModal(){
-  document.getElementById('udrop-menu').classList.remove('open');
+  closeDropdown();
   const u=users[currentUser.username]||{};
   document.getElementById('profile-content').innerHTML=`
     <div style="margin-bottom:14px">
@@ -1253,7 +1255,7 @@ const BG_COLORS=[
 ];
 
 function openSettingsModal(){
-  document.getElementById('udrop-menu').classList.remove('open');
+  closeDropdown();
   // Build accent swatches
   const accentEl=document.getElementById('accent-swatches');
   const curAccent=getComputedStyle(document.documentElement).getPropertyValue('--accent').trim();
@@ -1404,7 +1406,7 @@ window.addEventListener('DOMContentLoaded',async()=>{
 <footer style="background:var(--surface);border-top:1px solid var(--border);padding:16px 28px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;margin-top:40px">
   <div style="display:flex;align-items:center;gap:16px">
     <span style="font-family:var(--font-display);font-size:15px;font-weight:500;color:var(--text)">Phiếu Trả Lời</span>
-    <span style="font-size:12px;color:var(--hint);background:var(--bg);border:1px solid var(--border);padding:2px 9px;border-radius:12px">v2.0.3</span>
+    <span style="font-size:12px;color:var(--hint);background:var(--bg);border:1px solid var(--border);padding:2px 9px;border-radius:12px">v2.0.4</span>
   </div>
   <div style="display:flex;gap:20px;align-items:center">
     <span style="font-size:12px;color:var(--hint)">Hệ thống quản lý &amp; chấm điểm đề thi</span>
