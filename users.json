@@ -1,0 +1,26 @@
+{
+  "admin": {
+    "username": "admin",
+    "fullname": "Quản trị viên",
+    "passwordHash": "8c6976e5b5410415bde908bd4dee15dfb167a9c873fc4bb8a81f6f2ab448a918",
+    "role": "admin",
+    "status": "active",
+    "createdAt": "2025-01-01T00:00:00.000Z"
+  },
+  "giaovien1": {
+    "username": "giaovien1",
+    "fullname": "Nguyễn Thị Lan",
+    "passwordHash": "25f9e794323b453885f5181f1b624d0b01a8cf69ca1a4a77e5a1a6c7b3f8c2e9",
+    "role": "teacher",
+    "status": "active",
+    "createdAt": "2025-01-02T00:00:00.000Z"
+  },
+  "hocsinh1": {
+    "username": "hocsinh1",
+    "fullname": "Trần Văn Bình",
+    "passwordHash": "a665a45920422f9d417e4867efdc4fb8a04a1f3fff1fa07e998e86f7f7a27ae3",
+    "role": "student",
+    "status": "active",
+    "createdAt": "2025-01-03T00:00:00.000Z"
+  }
+}
