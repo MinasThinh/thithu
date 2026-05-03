@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Phiếu Trả Lời 2.0.2</title>
+<title>Phiếu Trả Lời</title>
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Noto+Serif:wght@400;500&display=swap" rel="stylesheet">
@@ -203,10 +203,10 @@ main{max-width:1400px;margin:0 auto;padding:28px 22px 110px}
 .bbar-actions{display:flex;gap:8px}
 
 /* MODAL */
-.modal-bg{display:none;position:fixed;inset:0;background:rgba(0,0,0,.35);z-index:500;align-items:center;justify-content:center}
-.modal-bg.open{display:flex}
-.modal{background:var(--surface);border:1px solid var(--border);border-radius:var(--rlg);padding:26px;max-width:480px;width:92%;max-height:90vh;overflow-y:auto}
-.modal-title{font-family:var(--font-display);font-size:17px;font-weight:500;margin-bottom:14px}
+.cmodal-bg{display:none;position:fixed;inset:0;background:rgba(0,0,0,.35);z-index:500;align-items:center;justify-content:center}
+.cmodal-bg.open{display:flex}
+.cmodal{background:var(--surface);border:1px solid var(--border);border-radius:var(--rlg);padding:26px;max-width:480px;width:92%;max-height:90vh;overflow-y:auto}
+.cmodal-title{font-family:var(--font-display);font-size:17px;font-weight:500;margin-bottom:14px}
 
 /* USER DROPDOWN */
 .user-dropdown{position:relative;display:inline-block}
@@ -490,9 +490,9 @@ main{max-width:1400px;margin:0 auto;padding:28px 22px 110px}
 </main>
 
 <!-- PROFILE MODAL -->
-<div class="modal-bg" id="profile-modal">
-  <div class="modal">
-    <p class="modal-title">Thông tin tài khoản</p>
+<div class="cmodal-bg" id="profile-modal">
+  <div class="cmodal">
+    <p class="cmodal-title">Thông tin tài khoản</p>
     <div id="profile-content"></div>
     <div class="brow" style="margin-top:20px">
       <button class="btn btn-dark" onclick="saveProfile()">Lưu thay đổi</button>
@@ -502,9 +502,9 @@ main{max-width:1400px;margin:0 auto;padding:28px 22px 110px}
 </div>
 
 <!-- SETTINGS MODAL -->
-<div class="modal-bg" id="settings-modal">
+<div class="cmodal-bg" id="settings-modal">
   <div class="modal" style="max-width:520px">
-    <p class="modal-title">Cài đặt giao diện</p>
+    <p class="cmodal-title">Cài đặt giao diện</p>
     <div class="settings-section">
       <div class="settings-label">Màu nhấn (Accent)</div>
       <div class="color-swatches" id="accent-swatches"></div>
@@ -546,9 +546,9 @@ main{max-width:1400px;margin:0 auto;padding:28px 22px 110px}
 </div>
 
 
-<div class="modal-bg" id="del-modal">
-  <div class="modal">
-    <p class="modal-title">Xoá đề thi?</p>
+<div class="cmodal-bg" id="del-modal">
+  <div class="cmodal">
+    <p class="cmodal-title">Xoá đề thi?</p>
     <p style="font-size:14px;color:var(--muted);margin-bottom:20px">Hành động này không thể hoàn tác.</p>
     <div class="brow"><button class="btn btn-red" onclick="confirmDelete()">Xoá</button><button class="btn btn-ghost" onclick="closeModal('del-modal')">Huỷ</button></div>
   </div>
@@ -709,15 +709,34 @@ async function ghFetch(path,cfg){
     const decoded=new TextDecoder('utf-8').decode(bytes);
     return{data:JSON.parse(decoded),sha:d.sha};
 }
-async function ghPut(path,data,sha,msg){
-  const c=getGhCfg(); if(!c.token)throw new Error('Cần nhập GitHub Token');
-  const url=`https://api.github.com/repos/${c.repo}/contents/${path}`;
-  const h={'Accept':'application/vnd.github+json','Authorization':'Bearer '+c.token,'Content-Type':'application/json'};
-  if(!sha){try{const r=await fetch(url+`?ref=${c.branch||'main'}`,{headers:h});if(r.ok){const d=await r.json();sha=d.sha;}}catch(e){}}
-  const body={message:msg||'Update',content:btoa(unescape(encodeURIComponent(JSON.stringify(data,null,2)))),branch:c.branch||'main'};
-  if(sha)body.sha=sha;
-  const res=await fetch(url,{method:'PUT',headers:h,body:JSON.stringify(body)});
-  if(!res.ok){const e=await res.json();throw new Error(e.message||res.statusText);}
+// Serialize pushes per file path to avoid SHA conflicts
+const _ghPushQueue={};
+async function ghPut(path,data,_ignored,msg){
+  const cfg=getGhCfg();
+  if(!cfg.token)throw new Error('Cần nhập GitHub Token');
+  if(!cfg.repo)throw new Error('Chưa cấu hình repo');
+  // Wait for any in-flight push to same path
+  if(_ghPushQueue[path]){try{await _ghPushQueue[path];}catch(e){}}
+  let resolvePQ,rejectPQ;
+  _ghPushQueue[path]=new Promise((res,rej)=>{resolvePQ=res;rejectPQ=rej;});
+  try{
+    const branch=cfg.branch||'main';
+    const url=`https://api.github.com/repos/${cfg.repo}/contents/${path}`;
+    const h={'Accept':'application/vnd.github+json','Authorization':'Bearer '+cfg.token,'Content-Type':'application/json'};
+    // Always fetch fresh SHA
+    let sha=null;
+    const getR=await fetch(url+'?ref='+branch,{headers:h});
+    if(getR.ok){const d=await getR.json();sha=d.sha;}
+    else if(getR.status!==404)throw new Error('GET failed: '+getR.status);
+    const jsonStr=JSON.stringify(data,null,2);
+    const b64=btoa(unescape(encodeURIComponent(jsonStr)));
+    const body={message:msg||'Update',content:b64,branch};
+    if(sha)body.sha=sha;
+    const putR=await fetch(url,{method:'PUT',headers:h,body:JSON.stringify(body)});
+    if(!putR.ok){const e=await putR.json();throw new Error(e.message||putR.statusText);}
+    resolvePQ();
+  }catch(e){rejectPQ(e);throw e;}
+  finally{delete _ghPushQueue[path];}
 }
 
 async function ghPullExams(){
@@ -732,6 +751,7 @@ async function ghPullExams(){
   }catch(e){setGhStatus('Lỗi: '+e.message.slice(0,36),'err');showToastErr(e.message.slice(0,80));}
 }
 async function ghPushExams(){
+  clearTimeout(_syncExamsTimer);_syncExamsTimer=null;
   setGhStatus('Đang lưu...','loading');
   try{
     const c=getGhCfg();
@@ -748,6 +768,7 @@ async function ghPullUsers(){
   }catch(e){showToastErr(e.message.slice(0,80));}
 }
 async function ghPushUsers(){
+  clearTimeout(_syncUsersTimer);_syncUsersTimer=null;
   try{
     const c=getGhCfg();
     await ghPut(c.usersPath||'users.json',users,null,`Update users — ${new Date().toLocaleString('vi-VN')}`);
@@ -1141,19 +1162,26 @@ function exportResult(){
 }
 
 /* ════════ BS CONFIRM ════════ */
-function bsConfirm(title, body, okLabel, okClass){
+function bsConfirm(title,body,okLabel,okClass){
   return new Promise(resolve=>{
     document.getElementById('bs-confirm-title').textContent=title;
     document.getElementById('bs-confirm-body').textContent=body;
     const okBtn=document.getElementById('bs-confirm-ok');
     okBtn.textContent=okLabel||'Xác nhận';
     okBtn.className='btn '+(okClass||'btn-dark');
-    const modal=bootstrap.Modal.getOrCreateInstance(document.getElementById('bs-confirm-modal'));
-    const handler=()=>{modal.hide();resolve(true);};
-    const hideHandler=()=>{resolve(false);};
-    okBtn.onclick=handler;
-    document.getElementById('bs-confirm-modal').addEventListener('hidden.bs.modal',hideHandler,{once:true});
-    modal.show();
+    const modal=document.getElementById('bs-confirm-modal');
+    modal.classList.add('open');
+    function ok(){modal.classList.remove('open');cleanup();resolve(true);}
+    function cancel(){modal.classList.remove('open');cleanup();resolve(false);}
+    function bgClick(e){if(e.target===modal)cancel();}
+    function cleanup(){
+      okBtn.removeEventListener('click',ok);
+      document.getElementById('bs-confirm-cancel').removeEventListener('click',cancel);
+      modal.removeEventListener('click',bgClick);
+    }
+    okBtn.addEventListener('click',ok,{once:true});
+    document.getElementById('bs-confirm-cancel').addEventListener('click',cancel,{once:true});
+    modal.addEventListener('click',bgClick);
   });
 }
 
@@ -1357,24 +1385,31 @@ window.addEventListener('DOMContentLoaded',async()=>{
   </div>
 </div>
 
-<!-- BS CONFIRM MODAL -->
-<div class="modal fade" id="bs-confirm-modal" tabindex="-1">
-  <div class="modal-dialog modal-dialog-centered modal-sm">
-    <div class="modal-content" style="border-radius:var(--rlg);border:1px solid var(--border);background:var(--surface)">
-      <div class="modal-body p-4">
-        <p class="fw-semibold mb-1" id="bs-confirm-title" style="font-size:16px;color:var(--text)"></p>
-        <p class="mb-3" id="bs-confirm-body" style="font-size:14px;color:var(--muted)"></p>
-        <div class="d-flex gap-2 justify-content-end">
-          <button class="btn btn-ghost" data-bs-dismiss="modal" id="bs-confirm-cancel">Huỷ</button>
-          <button class="btn" id="bs-confirm-ok">Xác nhận</button>
-        </div>
-      </div>
+<!-- CUSTOM CONFIRM MODAL -->
+<div class="cmodal-bg" id="bs-confirm-modal">
+  <div class="cmodal" style="max-width:380px">
+    <p class="cmodal-title" id="bs-confirm-title"></p>
+    <p style="font-size:14px;color:var(--muted);margin-bottom:20px" id="bs-confirm-body"></p>
+    <div class="brow" style="justify-content:flex-end">
+      <button class="btn btn-ghost" id="bs-confirm-cancel">Huỷ</button>
+      <button class="btn" id="bs-confirm-ok">Xác nhận</button>
     </div>
   </div>
 </div>
 
 <!-- SYNC STATUS -->
 <div id="sync-indicator" style="position:fixed;bottom:70px;right:18px;font-size:12px;padding:5px 12px;border-radius:20px;background:var(--surface);border:1px solid var(--border);color:var(--hint);display:none;z-index:200;transition:all .3s;box-shadow:0 2px 8px rgba(0,0,0,.08)"></div>
+
+<!-- FOOTER -->
+<footer style="background:var(--surface);border-top:1px solid var(--border);padding:16px 28px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;margin-top:40px">
+  <div style="display:flex;align-items:center;gap:16px">
+    <span style="font-family:var(--font-display);font-size:15px;font-weight:500;color:var(--text)">Phiếu Trả Lời</span>
+    <span style="font-size:12px;color:var(--hint);background:var(--bg);border:1px solid var(--border);padding:2px 9px;border-radius:12px">v2.0.3</span>
+  </div>
+  <div style="display:flex;gap:20px;align-items:center">
+    <span style="font-size:12px;color:var(--hint)">Hệ thống quản lý &amp; chấm điểm đề thi</span>
+  </div>
+</footer>
 
 </body>
 </html>
