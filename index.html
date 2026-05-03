@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Phiếu Trả Lời 1.0.2</title>
+<title>Phiếu Trả Lời</title>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Noto+Serif:wght@400;500&display=swap" rel="stylesheet">
 <style>
 :root{
@@ -19,7 +19,7 @@
   --font-display: 'Noto Serif', Georgia, serif;
 }
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-body{font-family:var(--font);background:var(--bg);color:var(--text);min-height:100vh;font-size:15px;line-height:1.6}
+body{font-family:var(--font);background:var(--bg);color:var(--text);min-height:100vh;font-size:17px;line-height:1.65}
 
 /* LOGIN OVERLAY */
 #login-overlay{position:fixed;inset:0;background:var(--bg);z-index:1000;display:flex;align-items:center;justify-content:center;padding:20px}
@@ -45,7 +45,7 @@ header{background:var(--surface);border-bottom:1px solid var(--border);padding:0
 .hbrand{display:flex;align-items:center;gap:10px;padding:13px 22px 13px 0;border-right:1px solid var(--border-soft);margin-right:18px}
 .hbrand h1{font-family:var(--font-display);font-size:20px;font-weight:500;letter-spacing:-.01em}
 .htabs{display:flex;align-items:stretch}
-.htab{padding:0 18px;font-family:var(--font);font-size:12px;font-weight:600;letter-spacing:.05em;text-transform:uppercase;color:var(--hint);background:transparent;border:none;border-bottom:2px solid transparent;cursor:pointer;transition:color .15s,border-color .15s}
+.htab{padding:0 18px;font-family:var(--font);font-size:13px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;color:var(--hint);background:transparent;border:none;border-bottom:2px solid transparent;cursor:pointer;transition:color .15s,border-color .15s}
 .htab:hover{color:var(--muted)}.htab.active{color:var(--text);border-bottom-color:var(--text)}
 .hright{margin-left:auto;display:flex;align-items:center;gap:10px;padding:13px 0}
 .ppill{background:var(--bg);border:1px solid var(--border);border-radius:20px;padding:4px 13px;font-size:12px;color:var(--muted)}
@@ -63,12 +63,12 @@ header{background:var(--surface);border-bottom:1px solid var(--border);padding:0
 .rb-student{background:var(--green-bg);color:var(--green)}
 
 /* MAIN */
-main{max-width:980px;margin:0 auto;padding:28px 22px 110px}
+main{max-width:1400px;margin:0 auto;padding:28px 22px 110px}
 .panel{display:none}.panel.active{display:block}
 
 /* CARD */
 .card{background:var(--surface);border:1px solid var(--border);border-radius:var(--rlg);padding:24px;margin-bottom:18px}
-.ctitle{font-family:var(--font-display);font-size:17px;font-weight:500;margin-bottom:16px}
+.ctitle{font-family:var(--font-display);font-size:20px;font-weight:500;margin-bottom:16px}
 .csub{font-size:13px;color:var(--hint);margin-bottom:14px;line-height:1.65}
 
 /* FIELDS */
@@ -91,7 +91,7 @@ main{max-width:980px;margin:0 auto;padding:28px 22px 110px}
 /* SECTION HEADER */
 .sec-hd{display:flex;align-items:center;gap:10px;margin:26px 0 11px}
 .sec-hd:first-child{margin-top:0}
-.stag{font-size:11px;font-weight:600;letter-spacing:.07em;text-transform:uppercase;color:var(--hint);padding:3px 9px;border:1px solid var(--border-soft);border-radius:4px;background:var(--surface);white-space:nowrap}
+.stag{font-size:12px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--hint);padding:3px 9px;border:1px solid var(--border-soft);border-radius:4px;background:var(--surface);white-space:nowrap}
 .sline{flex:1;height:1px;background:var(--border-soft)}
 .sinfo{font-size:12px;color:var(--hint);white-space:nowrap}
 
@@ -101,9 +101,9 @@ main{max-width:980px;margin:0 auto;padding:28px 22px 110px}
 .tn-item.answered{border-color:var(--accent)}
 .tn-item.correct{border-color:var(--green);background:var(--green-bg)}
 .tn-item.wrong{border-color:var(--red);background:var(--red-bg)}
-.qlbl{font-size:11px;color:var(--hint);margin-bottom:7px;font-weight:500}
+.qlbl{font-size:13px;color:var(--hint);margin-bottom:7px;font-weight:500}
 .choices{display:grid;grid-template-columns:1fr 1fr;gap:5px}
-.cbtn{height:30px;border:1px solid var(--border);border-radius:5px;font-family:var(--font);font-size:13px;font-weight:600;background:transparent;color:var(--muted);cursor:pointer;transition:all .1s}
+.cbtn{height:30px;border:1px solid var(--border);border-radius:5px;font-family:var(--font);font-size:14px;font-weight:600;background:transparent;color:var(--muted);cursor:pointer;transition:all .1s}
 .cbtn:hover{background:var(--bg);border-color:var(--accent);color:var(--accent)}
 .cbtn.selected{background:var(--accent-bg);border-color:var(--accent);color:var(--accent)}
 .cbtn.key-ans{background:var(--green-bg);border-color:var(--green);color:var(--green)}
@@ -154,7 +154,7 @@ main{max-width:980px;margin:0 auto;padding:28px 22px 110px}
 .exam-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--rlg);padding:18px 20px;display:flex;align-items:center;gap:16px;transition:border-color .15s}
 .exam-card:hover{border-color:var(--accent)}
 .exam-card-info{flex:1}
-.exam-card-name{font-weight:600;font-size:15px;margin-bottom:3px}
+.exam-card-name{font-weight:600;font-size:16px;margin-bottom:3px}
 .exam-card-meta{font-size:12px;color:var(--hint)}
 .exam-card-actions{display:flex;gap:7px}
 
@@ -206,6 +206,31 @@ main{max-width:980px;margin:0 auto;padding:28px 22px 110px}
 .modal{background:var(--surface);border:1px solid var(--border);border-radius:var(--rlg);padding:26px;max-width:480px;width:92%;max-height:90vh;overflow-y:auto}
 .modal-title{font-family:var(--font-display);font-size:17px;font-weight:500;margin-bottom:14px}
 
+/* USER DROPDOWN */
+.user-dropdown{position:relative;display:inline-block}
+.udrop-menu{display:none;position:absolute;right:0;top:calc(100% + 6px);background:var(--surface);border:1px solid var(--border);border-radius:var(--rlg);min-width:220px;box-shadow:0 8px 24px rgba(0,0,0,.1);z-index:300;overflow:hidden}
+.udrop-menu.open{display:block}
+.udrop-header{padding:14px 16px;border-bottom:1px solid var(--border-soft)}
+.udrop-name{font-weight:600;font-size:14px;margin-bottom:2px}
+.udrop-role{font-size:12px;color:var(--hint)}
+.udrop-item{display:flex;align-items:center;gap:10px;padding:11px 16px;font-size:14px;color:var(--text);cursor:pointer;transition:background .12s;border:none;background:transparent;width:100%;text-align:left;font-family:var(--font)}
+.udrop-item:hover{background:var(--bg)}
+.udrop-item.danger{color:var(--red)}
+.udrop-divider{height:1px;background:var(--border-soft);margin:4px 0}
+
+/* SETTINGS / PROFILE MODAL PANELS */
+.modal-tabs{display:flex;border-bottom:1px solid var(--border-soft);margin:-26px -26px 20px;padding:0 20px}
+.modal-tab{padding:12px 16px;font-size:13px;font-weight:500;color:var(--hint);background:transparent;border:none;border-bottom:2px solid transparent;cursor:pointer;font-family:var(--font)}
+.modal-tab.active{color:var(--text);border-bottom-color:var(--text)}
+.settings-section{margin-bottom:20px}
+.settings-label{font-size:11px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--hint);margin-bottom:10px}
+.color-swatches{display:flex;gap:8px;flex-wrap:wrap}
+.swatch{width:32px;height:32px;border-radius:50%;border:2px solid transparent;cursor:pointer;transition:transform .15s}
+.swatch:hover{transform:scale(1.1)}
+.swatch.active{border-color:var(--text)}
+.font-size-row{display:flex;align-items:center;gap:12px}
+.font-size-row input[type=range]{flex:1;accent-color:var(--accent)}
+
 /* TOAST */
 .toast{position:fixed;top:68px;right:18px;background:var(--text);color:var(--surface);padding:10px 16px;border-radius:var(--r);font-size:13px;opacity:0;transform:translateY(-6px);pointer-events:none;transition:all .2s;z-index:600}
 .toast.show{opacity:1;transform:translateY(0)}
@@ -213,6 +238,13 @@ main{max-width:980px;margin:0 auto;padding:28px 22px 110px}
 @keyframes fadeUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
 .anim{animation:fadeUp .3s ease both}
 
+/* SPLIT LAYOUT */
+#sheet-split{display:flex!important}
+@media(max-width:900px){
+  #sheet-split{flex-direction:column!important}
+  #sheet-left{padding-right:0!important}
+  #sheet-right{width:100%!important;position:static!important;height:60vw!important;min-height:320px;border-left:none!important;padding-left:0!important;border-top:1px solid var(--border-soft);margin-top:20px;padding-top:14px}
+}
 @media(max-width:600px){
   header{padding:0 13px}.hbrand{padding:11px 13px 11px 0}
   main{padding:16px 13px 110px}.bbar{padding:9px 13px}
@@ -272,10 +304,22 @@ main{max-width:980px;margin:0 auto;padding:28px 22px 110px}
   </nav>
   <div class="hright">
     <div class="ppill" id="hprog" style="display:none"><b id="hp-done">0</b> / <b id="hp-total">0</b></div>
-    <div class="user-chip" id="user-chip" onclick="doLogout()">
-      <div class="user-avatar" id="user-avatar">?</div>
-      <span class="user-name" id="user-name-display">—</span>
-      <span class="role-badge" id="role-badge-display">—</span>
+    <div class="user-dropdown" id="user-dropdown">
+      <div class="user-chip" id="user-chip" onclick="toggleUserMenu()">
+        <div class="user-avatar" id="user-avatar">?</div>
+        <span class="user-name" id="user-name-display">—</span>
+        <span class="role-badge" id="role-badge-display">—</span>
+      </div>
+      <div class="udrop-menu" id="udrop-menu">
+        <div class="udrop-header">
+          <div class="udrop-name" id="udrop-fullname">—</div>
+          <div class="udrop-role" id="udrop-role">—</div>
+        </div>
+        <button class="udrop-item" onclick="openProfileModal()">👤&nbsp; Thông tin tài khoản</button>
+        <button class="udrop-item" onclick="openSettingsModal()">⚙️&nbsp; Cài đặt giao diện</button>
+        <div class="udrop-divider"></div>
+        <button class="udrop-item danger" onclick="doLogout()">↩&nbsp; Đăng xuất</button>
+      </div>
     </div>
   </div>
 </header>
@@ -307,13 +351,18 @@ main{max-width:980px;margin:0 auto;padding:28px 22px 110px}
   </div>
 
   <div class="card">
-    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:18px;flex-wrap:wrap;gap:10px">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;flex-wrap:wrap;gap:10px">
       <p class="ctitle" style="margin:0">Danh sách đề thi</p>
       <div class="brow" id="exam-list-actions">
         <button class="btn btn-ghost" style="font-size:13px" onclick="importExams()">📂 Tải file</button>
         <button class="btn btn-ghost" style="font-size:13px" onclick="exportAllExams()">💾 Lưu file</button>
         <button class="btn btn-dark" id="btn-new-exam" onclick="newExam()">+ Tạo đề mới</button>
       </div>
+    </div>
+    <div style="margin-bottom:14px">
+      <input type="text" id="exam-search" placeholder="🔍  Tìm kiếm đề thi..." oninput="renderExamList()"
+        style="width:100%;padding:9px 13px;font-size:14px;font-family:var(--font);border:1px solid var(--border);border-radius:var(--r);background:var(--bg);color:var(--text);outline:none;transition:border-color .15s"
+        onfocus="this.style.borderColor='var(--accent)'" onblur="this.style.borderColor='var(--border)'">
     </div>
     <div id="exam-list-area"></div>
   </div>
@@ -378,32 +427,47 @@ main{max-width:980px;margin:0 auto;padding:28px 22px 110px}
     <p style="color:var(--hint);font-size:14px;margin-bottom:16px">Chọn một đề thi và nhấn <b style="color:var(--text)">Làm bài</b> ở tab Đề thi.</p>
     <button class="btn btn-dark" onclick="switchTab('exams',document.getElementById('tab-exams-btn'))">Về Đề thi →</button>
   </div>
-  <div class="exam-banner anim" id="exam-banner" style="display:none">
-    <div class="eb-info">
-      <div class="eb-name" id="eb-name">—</div>
-      <div class="eb-meta" id="eb-meta">—</div>
-    </div>
-    <div class="eb-actions">
-      <a id="eb-link" href="#" target="_blank" class="btn btn-ghost" style="display:none">Xem đề ↗</a>
-      <button class="btn btn-ghost" onclick="switchTab('exams',document.getElementById('tab-exams-btn'))">← Đề thi</button>
-    </div>
-  </div>
-  <div id="sheet-area" style="display:none">
-    <div id="sheet-tn-sec"></div><div id="sheet-ds-sec"></div><div id="sheet-tln-sec"></div>
-  </div>
-  <div class="score-screen" id="score-screen">
-    <div class="score-hero">
-      <div class="bigscore" id="sc-big">—</div>
-      <div class="scoredenom" id="sc-denom">/ 10 điểm</div>
-      <div class="scorebd">
-        <div class="sbi tn" id="sb-tn"><div class="sbval" id="sc-tn-val">—</div><div class="sblbl">Trắc nghiệm</div></div>
-        <div class="sbi ds" id="sb-ds"><div class="sbval" id="sc-ds-val">—</div><div class="sblbl">Đúng – Sai</div></div>
-        <div class="sbi tln" id="sb-tln"><div class="sbval" id="sc-tln-val">—</div><div class="sblbl">Trả lời ngắn</div></div>
+  <!-- Split layout -->
+  <div id="sheet-split" style="display:none;gap:0;align-items:flex-start">
+    <!-- LEFT: answer sheet -->
+    <div id="sheet-left" style="flex:1;min-width:0;padding-right:14px">
+      <!-- Exam name header -->
+      <div style="margin-bottom:16px">
+        <div style="font-family:var(--font-display);font-size:20px;font-weight:500;margin-bottom:4px" id="eb-name">—</div>
+        <div style="font-size:13px;color:var(--hint)" id="eb-meta">—</div>
+      </div>
+      <div id="sheet-area">
+        <div id="sheet-tn-sec"></div><div id="sheet-ds-sec"></div><div id="sheet-tln-sec"></div>
+      </div>
+      <div class="score-screen" id="score-screen">
+        <div class="score-hero">
+          <div class="bigscore" id="sc-big">—</div>
+          <div class="scoredenom" id="sc-denom">/ 10 điểm</div>
+          <div class="scorebd">
+            <div class="sbi tn" id="sb-tn"><div class="sbval" id="sc-tn-val">—</div><div class="sblbl">Trắc nghiệm</div></div>
+            <div class="sbi ds" id="sb-ds"><div class="sbval" id="sc-ds-val">—</div><div class="sblbl">Đúng – Sai</div></div>
+            <div class="sbi tln" id="sb-tln"><div class="sbval" id="sc-tln-val">—</div><div class="sblbl">Trả lời ngắn</div></div>
+          </div>
+        </div>
+        <div class="brow" style="margin-top:16px">
+          <button class="btn btn-ghost" onclick="retakeExam()">Làm lại</button>
+          <button class="btn btn-blue" onclick="exportResult()">Xuất kết quả ↗</button>
+        </div>
       </div>
     </div>
-    <div class="brow" style="margin-top:16px">
-      <button class="btn btn-ghost" onclick="retakeExam()">Làm lại</button>
-      <button class="btn btn-blue" onclick="exportResult()">Xuất kết quả ↗</button>
+    <!-- RIGHT: PDF viewer -->
+    <div id="sheet-right" style="width:48%;flex-shrink:0;position:sticky;top:64px;height:calc(100vh - 80px);display:flex;flex-direction:column;border-left:1px solid var(--border-soft);padding-left:14px">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
+        <span style="font-size:13px;font-weight:600;color:var(--muted)">Đề thi</span>
+        <a id="pdf-open-link" href="#" target="_blank" class="btn btn-ghost" style="font-size:12px;padding:5px 12px">Mở mới ↗</a>
+      </div>
+      <div id="pdf-frame-wrap" style="flex:1;border-radius:var(--r);overflow:hidden;border:1px solid var(--border)">
+        <iframe id="pdf-frame" src="" style="width:100%;height:100%;border:none;background:#fff"></iframe>
+      </div>
+      <div id="pdf-no-link" style="flex:1;display:none;align-items:center;justify-content:center;flex-direction:column;gap:12px;color:var(--hint)">
+        <div style="font-size:40px">📄</div>
+        <div style="font-size:14px;text-align:center">Đề thi chưa có link.<br>Giáo viên cần thêm link Drive khi tạo đề.</div>
+      </div>
     </div>
   </div>
 </div>
@@ -423,6 +487,52 @@ main{max-width:980px;margin:0 auto;padding:28px 22px 110px}
 </div>
 
 </main>
+
+<!-- PROFILE MODAL -->
+<div class="modal-bg" id="profile-modal">
+  <div class="modal">
+    <p class="modal-title">Thông tin tài khoản</p>
+    <div id="profile-content"></div>
+    <div class="brow" style="margin-top:20px">
+      <button class="btn btn-dark" onclick="saveProfile()">Lưu thay đổi</button>
+      <button class="btn btn-ghost" onclick="closeModal('profile-modal')">Đóng</button>
+    </div>
+  </div>
+</div>
+
+<!-- SETTINGS MODAL -->
+<div class="modal-bg" id="settings-modal">
+  <div class="modal" style="max-width:520px">
+    <p class="modal-title">Cài đặt giao diện</p>
+    <div class="settings-section">
+      <div class="settings-label">Màu nhấn (Accent)</div>
+      <div class="color-swatches" id="accent-swatches"></div>
+    </div>
+    <div class="settings-section">
+      <div class="settings-label">Màu nền</div>
+      <div class="color-swatches" id="bg-swatches"></div>
+    </div>
+    <div class="settings-section">
+      <div class="settings-label">Cỡ chữ &nbsp;<span id="font-size-val" style="color:var(--text);font-weight:600"></span></div>
+      <div class="font-size-row">
+        <span style="font-size:12px;color:var(--hint)">A</span>
+        <input type="range" id="font-size-slider" min="14" max="20" step="1" oninput="applyFontSize(this.value)">
+        <span style="font-size:18px;color:var(--hint)">A</span>
+      </div>
+    </div>
+    <div class="settings-section">
+      <div class="settings-label">Chế độ</div>
+      <div class="brow">
+        <button class="btn btn-ghost" id="theme-light-btn" onclick="setTheme('light')">☀ Sáng</button>
+        <button class="btn btn-ghost" id="theme-dark-btn" onclick="setTheme('dark')">🌙 Tối</button>
+      </div>
+    </div>
+    <div class="brow" style="margin-top:6px">
+      <button class="btn btn-ghost" onclick="resetSettings()">Đặt lại mặc định</button>
+      <button class="btn btn-ghost" onclick="closeModal('settings-modal')">Đóng</button>
+    </div>
+  </div>
+</div>
 
 <div class="bbar" id="bbar">
   <div class="pbar-wrap"><div class="pbar-fill" id="prog-fill" style="width:0%"></div></div>
@@ -535,8 +645,14 @@ function applyRoleUI(){
   document.getElementById('user-avatar').textContent=currentUser.fullname[0].toUpperCase();
   document.getElementById('user-name-display').textContent=currentUser.fullname;
   const rb=document.getElementById('role-badge-display');
-  rb.textContent=r==='admin'?'Admin':r==='teacher'?'Giáo viên':'Học sinh';
+  const roleLabel=r==='admin'?'Admin':r==='teacher'?'Giáo viên':'Học sinh';
+  rb.textContent=roleLabel;
   rb.className='role-badge rb-'+r;
+  // Update dropdown header
+  const dn=document.getElementById('udrop-fullname');
+  const dr=document.getElementById('udrop-role');
+  if(dn)dn.textContent=currentUser.fullname;
+  if(dr)dr.textContent=roleLabel;
   // Tabs: student hides Tạo/Sửa; admin shows Quản trị
   document.getElementById('tab-creator-btn').style.display=(r==='student')?'none':'';
   document.getElementById('tab-admin-btn').style.display=(r==='admin')?'':'none';
@@ -746,17 +862,24 @@ function switchTab(tab,btn){
 /* ════════ EXAM LIST ════════ */
 function renderExamList(){
   const area=document.getElementById('exam-list-area');
-  const ids=Object.keys(exams);
+  const q=(document.getElementById('exam-search')?.value||'').toLowerCase().trim();
+  const allIds=Object.keys(exams);
+  const ids=q?allIds.filter(id=>exams[id].name.toLowerCase().includes(q)):allIds;
   const canEdit=currentUser&&currentUser.role!=='student';
-  if(ids.length===0){
-    area.innerHTML='<p style="color:var(--hint);font-size:14px;padding:20px 0 10px;text-align:center">Chưa có đề thi nào.</p>';return;
-  }
+  if(allIds.length===0){area.innerHTML='<p style="color:var(--hint);font-size:14px;padding:20px 0 10px;text-align:center">Chưa có đề thi nào.</p>';return;}
+  if(ids.length===0){area.innerHTML='<p style="color:var(--hint);font-size:14px;padding:20px 0 10px;text-align:center">Không tìm thấy đề thi nào.</p>';return;}
   area.innerHTML='<div class="exam-list">'+ids.map(id=>{
     const ex=exams[id];
     const parts=[ex.cfg.tn>0?ex.cfg.tn+' TN':'',ex.cfg.ds>0?ex.cfg.ds+' ĐS':'',ex.cfg.tln>0?ex.cfg.tln+' TLN':''].filter(Boolean).join(' · ');
+    // Last result for current user
+    let resultBadge='';
+    try{
+      const saved=localStorage.getItem('result_'+currentUser.username+'_'+id);
+      if(saved){const r=JSON.parse(saved);resultBadge=`<span style="font-size:12px;font-weight:600;color:var(--green);background:var(--green-bg);border:1px solid var(--green-bd);padding:2px 9px;border-radius:20px;margin-left:8px">✓ ${fmt(r.total)}đ</span>`;}
+    }catch(e){}
     return`<div class="exam-card">
       <div class="exam-card-info">
-        <div class="exam-card-name">${esc(ex.name)}</div>
+        <div class="exam-card-name">${esc(ex.name)}${resultBadge}</div>
         <div class="exam-card-meta">${parts} · TN:${fmt(ex.scoring.tn)}đ · ĐS max:${fmt(ex.scoring.ds[4])}đ · TLN:${fmt(ex.scoring.tln)}đ</div>
       </div>
       <div class="exam-card-actions">
@@ -879,6 +1002,7 @@ function resetCreator(){creatorKey={tn:{},ds:{},tln:{}};document.getElementById(
 function selectExamAndStart(id){
   currentExamId=id;sheet={tn:{},ds:{},tln:{}};submitted=false;
   document.getElementById('score-screen').style.display='none';
+  document.getElementById('sheet-split').style.display='none';
   buildSheet();
   document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
   document.querySelectorAll('.htab').forEach(b=>b.classList.remove('active'));
@@ -893,13 +1017,28 @@ function buildSheet(){
   document.getElementById('eb-name').textContent=name;
   const parts=[cfg.tn>0?cfg.tn+' câu trắc nghiệm':'',cfg.ds>0?cfg.ds+' câu đúng–sai':'',cfg.tln>0?cfg.tln+' câu trả lời ngắn':''].filter(Boolean).join(' · ');
   document.getElementById('eb-meta').textContent=parts;
-  const el=document.getElementById('eb-link');
-  const examUrl=exams[currentExamId]?.examUrl;
-  if(examUrl){el.href=examUrl;el.style.display='inline-flex';}else el.style.display='none';
-  document.getElementById('exam-banner').style.display='flex';
-  buildSheetTN(cfg.tn,scoring);buildSheetDS(cfg.tn,cfg.ds,scoring);buildSheetTLN(cfg.tn,cfg.ds,cfg.tln,scoring);
+  // PDF viewer
+  const examUrl=ex.examUrl||'';
+  const frameWrap=document.getElementById('pdf-frame-wrap');
+  const noLink=document.getElementById('pdf-no-link');
+  const openLink=document.getElementById('pdf-open-link');
+  if(examUrl){
+    // Convert Google Drive share URL to embed URL
+    let embedUrl=examUrl;
+    const m=examUrl.match(/\/file\/d\/([^/]+)/);
+    if(m)embedUrl=`https://drive.google.com/file/d/${m[1]}/preview`;
+    document.getElementById('pdf-frame').src=embedUrl;
+    openLink.href=examUrl;
+    frameWrap.style.display='';noLink.style.display='none';
+  }else{
+    document.getElementById('pdf-frame').src='';
+    frameWrap.style.display='none';noLink.style.display='flex';
+    openLink.href='#';
+  }
   document.getElementById('no-exam-msg').style.display='none';
+  document.getElementById('sheet-split').style.display='flex';
   document.getElementById('sheet-area').style.display='block';
+  buildSheetTN(cfg.tn,scoring);buildSheetDS(cfg.tn,cfg.ds,scoring);buildSheetTLN(cfg.tn,cfg.ds,cfg.tln,scoring);
   updateProgress();
 }
 function buildSheetTN(n,sc){
@@ -939,6 +1078,9 @@ function grade(){
   document.getElementById('score-screen').style.display='block';document.getElementById('bbar').style.display='none';document.getElementById('hprog').style.display='none';
   document.getElementById('score-screen').scrollIntoView({behavior:'smooth'});
   lastScore={total,sTN,sDS,sTLN,maxTotal};
+  // Save result for this user+exam
+  try{localStorage.setItem('result_'+currentUser.username+'_'+currentExamId,JSON.stringify({total,sTN,sDS,sTLN,maxTotal,at:new Date().toISOString()}));}catch(e){}
+  renderExamList();
 }
 function retakeExam(){if(!currentExamId)return;if(!confirm('Xóa bài làm và làm lại?'))return;selectExamAndStart(currentExamId);}
 function saveSheet(){try{localStorage.setItem('phanmem_sheet_'+currentExamId,JSON.stringify(sheet));showToast('Đã lưu bài làm!');}catch(e){showToast('Không thể lưu.');}}
@@ -952,6 +1094,157 @@ function exportResult(){
   const blob=new Blob([lines.join('\n')],{type:'text/plain;charset=utf-8'});const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download=`ket-qua-${new Date().toISOString().slice(0,10)}.txt`;a.click();URL.revokeObjectURL(url);showToast('Đã xuất kết quả!');
 }
 
+/* ════════ USER MENU ════════ */
+function toggleUserMenu(){
+  const m=document.getElementById('udrop-menu');
+  m.classList.toggle('open');
+}
+document.addEventListener('click',e=>{
+  const dd=document.getElementById('user-dropdown');
+  if(dd&&!dd.contains(e.target))document.getElementById('udrop-menu').classList.remove('open');
+});
+
+function openProfileModal(){
+  document.getElementById('udrop-menu').classList.remove('open');
+  const u=users[currentUser.username]||{};
+  document.getElementById('profile-content').innerHTML=`
+    <div style="margin-bottom:14px">
+      <label style="display:block;font-size:11px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--hint);margin-bottom:5px">Họ và tên</label>
+      <input type="text" id="prof-fullname" value="${esc(u.fullname||'')}" style="width:100%;padding:9px 11px;font-size:14px;font-family:var(--font);border:1px solid var(--border);border-radius:var(--r);background:var(--bg);color:var(--text);outline:none">
+    </div>
+    <div style="margin-bottom:14px">
+      <label style="display:block;font-size:11px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--hint);margin-bottom:5px">Mật khẩu mới <span style="font-weight:400;text-transform:none">(để trống nếu không đổi)</span></label>
+      <input type="password" id="prof-pass" placeholder="Tối thiểu 6 ký tự" style="width:100%;padding:9px 11px;font-size:14px;font-family:var(--font);border:1px solid var(--border);border-radius:var(--r);background:var(--bg);color:var(--text);outline:none">
+    </div>
+    <div>
+      <label style="display:block;font-size:11px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--hint);margin-bottom:5px">Xác nhận mật khẩu mới</label>
+      <input type="password" id="prof-pass2" style="width:100%;padding:9px 11px;font-size:14px;font-family:var(--font);border:1px solid var(--border);border-radius:var(--r);background:var(--bg);color:var(--text);outline:none">
+    </div>
+    <p style="font-size:12px;color:var(--hint);margin-top:10px">Tài khoản: <b style="color:var(--text)">${esc(currentUser.username)}</b> · Role: <b style="color:var(--text)">${currentUser.role}</b></p>`;
+  document.getElementById('profile-modal').classList.add('open');
+}
+
+async function saveProfile(){
+  const fullname=document.getElementById('prof-fullname').value.trim();
+  const pass=document.getElementById('prof-pass').value;
+  const pass2=document.getElementById('prof-pass2').value;
+  if(!fullname){showToast('Họ tên không được để trống.');return;}
+  if(pass&&pass.length<6){showToast('Mật khẩu tối thiểu 6 ký tự.');return;}
+  if(pass&&pass!==pass2){showToast('Mật khẩu xác nhận không khớp.');return;}
+  if(!users[currentUser.username]){showToast('Lỗi: không tìm thấy tài khoản.');return;}
+  users[currentUser.username].fullname=fullname;
+  if(pass)users[currentUser.username].passwordHash=await sha256(pass);
+  currentUser.fullname=fullname;
+  try{localStorage.setItem('session',JSON.stringify(currentUser));}catch(e){}
+  saveUsersLocal();
+  applyRoleUI();
+  closeModal('profile-modal');
+  showToast('Đã cập nhật thông tin!');
+}
+
+/* ════════ SETTINGS ════════ */
+const ACCENT_COLORS=[
+  {name:'Xanh dương',val:'#2952E3',bg:'#EEF2FF',border:'#C7D2FE'},
+  {name:'Tím',val:'#7C3AED',bg:'#F5F3FF',border:'#DDD6FE'},
+  {name:'Hồng',val:'#DB2777',bg:'#FDF2F8',border:'#FBCFE8'},
+  {name:'Cam',val:'#D97706',bg:'#FFFBEB',border:'#FDE68A'},
+  {name:'Xanh lá',val:'#15803D',bg:'#F0FDF4',border:'#86EFAC'},
+  {name:'Đen',val:'#1C1A17',bg:'#F4F2ED',border:'#DDD9D0'},
+];
+const BG_COLORS=[
+  {name:'Kem',val:'#F4F2ED',surface:'#FDFCF9'},
+  {name:'Trắng',val:'#F8F8F8',surface:'#FFFFFF'},
+  {name:'Xanh nhạt',val:'#EFF6FF',surface:'#F8FBFF'},
+  {name:'Xám',val:'#F3F4F6',surface:'#FAFAFA'},
+];
+
+function openSettingsModal(){
+  document.getElementById('udrop-menu').classList.remove('open');
+  // Build accent swatches
+  const accentEl=document.getElementById('accent-swatches');
+  const curAccent=getComputedStyle(document.documentElement).getPropertyValue('--accent').trim();
+  accentEl.innerHTML=ACCENT_COLORS.map(col=>
+    `<div class="swatch${col.val===curAccent?' active':''}" title="${col.name}" style="background:${col.val}" onclick="applyAccent('${col.val}','${col.bg}','${col.border}',this)"></div>`
+  ).join('');
+  // Build bg swatches
+  const bgEl=document.getElementById('bg-swatches');
+  const curBg=getComputedStyle(document.documentElement).getPropertyValue('--bg').trim();
+  bgEl.innerHTML=BG_COLORS.map(col=>
+    `<div class="swatch${col.val.trim()===curBg?' active':''}" title="${col.name}" style="background:${col.val};border-radius:8px;width:48px;height:32px" onclick="applyBg('${col.val}','${col.surface}',this)"></div>`
+  ).join('');
+  // Font size slider
+  const fs=parseInt(localStorage.getItem('setting_fontsize')||'17');
+  document.getElementById('font-size-slider').value=fs;
+  document.getElementById('font-size-val').textContent=fs+'px';
+  document.getElementById('settings-modal').classList.add('open');
+}
+
+function applyAccent(val,bg,border,el){
+  const r=document.documentElement;
+  r.style.setProperty('--accent',val);
+  r.style.setProperty('--accent-bg',bg);
+  r.style.setProperty('--accent-border',border);
+  document.querySelectorAll('#accent-swatches .swatch').forEach(s=>s.classList.remove('active'));
+  el.classList.add('active');
+  try{localStorage.setItem('setting_accent',JSON.stringify({val,bg,border}));}catch(e){}
+}
+
+function applyBg(val,surface,el){
+  const r=document.documentElement;
+  r.style.setProperty('--bg',val);
+  r.style.setProperty('--surface',surface);
+  document.querySelectorAll('#bg-swatches .swatch').forEach(s=>s.classList.remove('active'));
+  el.classList.add('active');
+  try{localStorage.setItem('setting_bg',JSON.stringify({val,surface}));}catch(e){}
+}
+
+function applyFontSize(val){
+  document.body.style.fontSize=val+'px';
+  document.getElementById('font-size-val').textContent=val+'px';
+  try{localStorage.setItem('setting_fontsize',val);}catch(e){}
+}
+
+function setTheme(mode){
+  if(mode==='dark'){
+    document.documentElement.style.setProperty('--bg','#1A1816');
+    document.documentElement.style.setProperty('--surface','#232120');
+    document.documentElement.style.setProperty('--surface2','#2A2826');
+    document.documentElement.style.setProperty('--border','#3A3733');
+    document.documentElement.style.setProperty('--border-soft','#302E2B');
+    document.documentElement.style.setProperty('--text','#F0EDE8');
+    document.documentElement.style.setProperty('--muted','#A09C96');
+    document.documentElement.style.setProperty('--hint','#6B675F');
+  }else{
+    document.documentElement.style.setProperty('--bg','#F4F2ED');
+    document.documentElement.style.setProperty('--surface','#FDFCF9');
+    document.documentElement.style.setProperty('--surface2','#F8F6F1');
+    document.documentElement.style.setProperty('--border','#DDD9D0');
+    document.documentElement.style.setProperty('--border-soft','#EAE7E0');
+    document.documentElement.style.setProperty('--text','#1C1A17');
+    document.documentElement.style.setProperty('--muted','#6B675F');
+    document.documentElement.style.setProperty('--hint','#A8A49C');
+  }
+  try{localStorage.setItem('setting_theme',mode);}catch(e){}
+}
+
+function resetSettings(){
+  ['setting_accent','setting_bg','setting_fontsize','setting_theme'].forEach(k=>{try{localStorage.removeItem(k);}catch(e){}});
+  location.reload();
+}
+
+function loadSettings(){
+  try{
+    const acc=JSON.parse(localStorage.getItem('setting_accent')||'null');
+    if(acc){document.documentElement.style.setProperty('--accent',acc.val);document.documentElement.style.setProperty('--accent-bg',acc.bg);document.documentElement.style.setProperty('--accent-border',acc.border);}
+    const bg=JSON.parse(localStorage.getItem('setting_bg')||'null');
+    if(bg){document.documentElement.style.setProperty('--bg',bg.val);document.documentElement.style.setProperty('--surface',bg.surface);}
+    const fs=localStorage.getItem('setting_fontsize');
+    if(fs)document.body.style.fontSize=fs+'px';
+    const theme=localStorage.getItem('setting_theme');
+    if(theme==='dark')setTheme('dark');
+  }catch(e){}
+}
+
 /* ════════ HELPERS ════════ */
 function fmt(n){if(n===undefined||n===null)return'—';const r=+parseFloat(n).toFixed(2);return Number.isInteger(r)?String(r):String(r).replace('.',',');}
 function esc(s){const d=document.createElement('div');d.textContent=s;return d.innerHTML;}
@@ -960,6 +1253,7 @@ function showToast(msg){const t=document.getElementById('toast');t.textContent=m
 
 /* ════════ INIT ════════ */
 window.addEventListener('DOMContentLoaded',async()=>{
+  loadSettings();
   loadUsersLocal();
   await ensureDefaultAdmin();
   // Try restore session
