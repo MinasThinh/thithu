@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Phiếu Trả Lời 1.0.1</title>
+<title>Phiếu Trả Lời</title>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Noto+Serif:wght@400;500&display=swap" rel="stylesheet">
 <style>
 :root{
@@ -325,6 +325,7 @@ main{max-width:980px;margin:0 auto;padding:28px 22px 110px}
     <p class="ctitle" id="creator-card-title">Tạo đề thi mới</p>
     <div class="frow">
       <div class="field" style="grid-column:1/-1"><label>Tên đề thi</label><input type="text" id="ex-name" placeholder="VD: Kiểm tra HK1 Toán 12"></div>
+      <div class="field" style="grid-column:1/-1"><label>Link đề thi <span style="font-weight:400;text-transform:none;letter-spacing:0">(tuỳ chọn — Google Drive, PDF...)</span></label><input type="text" id="ex-url" placeholder="https://drive.google.com/..."></div>
       <div class="field"><label>Trắc nghiệm (câu)</label><input type="number" id="ex-tn" value="12" min="0" max="80"></div>
       <div class="field"><label>Đúng – Sai (câu)</label><input type="number" id="ex-ds" value="4" min="0" max="20"></div>
       <div class="field"><label>Trả lời ngắn (câu)</label><input type="number" id="ex-tln" value="6" min="0" max="20"></div>
@@ -782,6 +783,7 @@ function editExam(id){
   if(currentUser?.role==='student'){showToast('Không có quyền.');return;}
   editingExamId=id;const ex=exams[id];
   document.getElementById('ex-name').value=ex.name;
+  document.getElementById('ex-url').value=ex.examUrl||'';
   document.getElementById('ex-tn').value=ex.cfg.tn;
   document.getElementById('ex-ds').value=ex.cfg.ds;
   document.getElementById('ex-tln').value=ex.cfg.tln;
@@ -863,7 +865,8 @@ function finalizeExam(){
   if(filled<total&&!confirm(`Còn ${total-filled} ô chưa điền. Vẫn lưu?`))return;
   const name=document.getElementById('ex-name').value.trim()||'Đề thi';
   const id=editingExamId||('ex_'+Date.now());
-  exams[id]={id,name,cfg:{tn,ds,tln},key:JSON.parse(JSON.stringify(creatorKey)),scoring:getScoring(),scoringMode};
+  const examUrl=document.getElementById('ex-url').value.trim();
+  exams[id]={id,name,examUrl,cfg:{tn,ds,tln},key:JSON.parse(JSON.stringify(creatorKey)),scoring:getScoring(),scoringMode};
   saveAll();renderExamList();
   document.getElementById('creator-key-area').style.display='none';
   showToast(editingExamId?'Đã cập nhật!':'Đề thi đã tạo xong!');
@@ -890,8 +893,9 @@ function buildSheet(){
   document.getElementById('eb-name').textContent=name;
   const parts=[cfg.tn>0?cfg.tn+' câu trắc nghiệm':'',cfg.ds>0?cfg.ds+' câu đúng–sai':'',cfg.tln>0?cfg.tln+' câu trả lời ngắn':''].filter(Boolean).join(' · ');
   document.getElementById('eb-meta').textContent=parts;
-  const c=getGhCfg();const el=document.getElementById('eb-link');
-  if(c.repo&&c.path){el.href=`https://github.com/${c.repo}/blob/${c.branch||'main'}/${c.path}`;el.style.display='inline-flex';}else el.style.display='none';
+  const el=document.getElementById('eb-link');
+  const examUrl=exams[currentExamId]?.examUrl;
+  if(examUrl){el.href=examUrl;el.style.display='inline-flex';}else el.style.display='none';
   document.getElementById('exam-banner').style.display='flex';
   buildSheetTN(cfg.tn,scoring);buildSheetDS(cfg.tn,cfg.ds,scoring);buildSheetTLN(cfg.tn,cfg.ds,cfg.tln,scoring);
   document.getElementById('no-exam-msg').style.display='none';
