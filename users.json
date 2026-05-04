@@ -11,7 +11,7 @@
     "username": "jenny",
     "fullname": "Bùi Thị Lam",
     "passwordHash": "0ea60631320ba517e81aa6eb5cb6a189543107e859c229959af060cb656e1948",
-    "role": "teacher",
+    "role": "student",
     "status": "active",
     "createdAt": "2026-05-03T07:32:50.422Z"
   }
