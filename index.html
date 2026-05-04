@@ -334,7 +334,7 @@ main{max-width:1400px;margin:0 auto;padding:28px 22px 110px}
     <div class="gh-title">
       <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z"/></svg>
       GitHub Sync
-      <span class="gh-status" id="gh-status">Chưa cấu hình</span>
+      <span class="gh-status" id="gh-status">Đang kết nối…</span>
     </div>
     <div class="gh-fields">
       <div class="field"><label>GitHub Token</label><input type="password" id="gh-token" placeholder="ghp_xxxxxxxxxxxx" oninput="saveGhConfig()"></div>
@@ -555,6 +555,16 @@ main{max-width:1400px;margin:0 auto;padding:28px 22px 110px}
 </div>
 
 <script>
+/* ════════ SITE CONFIG — chỉnh sửa tại đây ════════ */
+// Điền repo của bạn vào đây để tự động sync không cần admin đăng nhập trước
+const SITE_CONFIG = {
+  repo:      'MinasThinh/thithu',   // ← owner/repo-name
+  branch:    'main',
+  examsPath: 'exam.json',
+  usersPath: 'users.json',
+};
+/* ════════════════════════════════════════════════════ */
+
 /* ════════ STATE ════════ */
 let exams={}, users={}, currentExamId=null, editingExamId=null, deleteTargetId=null;
 let creatorKey={tn:{},ds:{},tln:{}}, scoringMode='default';
@@ -679,17 +689,28 @@ function saveGhConfig(){
 }
 function loadGhConfig(){
   try{
-    const c=JSON.parse(localStorage.getItem('gh_cfg')||'{}');
-    if(c.token)document.getElementById('gh-token').value=c.token;
-    if(c.repo)document.getElementById('gh-repo').value=c.repo;
-    if(c.path)document.getElementById('gh-path').value=c.path;
-    if(c.usersPath)document.getElementById('gh-users-path').value=c.usersPath;
-    if(c.branch)document.getElementById('gh-branch').value=c.branch;
+    const stored=JSON.parse(localStorage.getItem('gh_cfg')||'{}');
+    // Prefill from SITE_CONFIG if not overridden in localStorage
+    document.getElementById('gh-token').value    = stored.token     || '';
+    document.getElementById('gh-repo').value     = stored.repo      || SITE_CONFIG.repo;
+    document.getElementById('gh-path').value     = stored.path      || SITE_CONFIG.examsPath;
+    document.getElementById('gh-users-path').value = stored.usersPath || SITE_CONFIG.usersPath;
+    document.getElementById('gh-branch').value   = stored.branch    || SITE_CONFIG.branch;
     updateGhFileLink();
   }catch(e){}
 }
 function getGhCfg(){
-  try{return JSON.parse(localStorage.getItem('gh_cfg')||'{}');}catch(e){return{};}
+  // SITE_CONFIG provides repo/path/branch (baked in, works for everyone)
+  // localStorage provides token (admin only, needed for writes)
+  let stored={};
+  try{stored=JSON.parse(localStorage.getItem('gh_cfg')||'{}');}catch(e){}
+  return {
+    repo:      stored.repo      || SITE_CONFIG.repo,
+    branch:    stored.branch    || SITE_CONFIG.branch,
+    path:      stored.path      || SITE_CONFIG.examsPath,
+    usersPath: stored.usersPath || SITE_CONFIG.usersPath,
+    token:     stored.token     || '',
+  };
 }
 function updateGhFileLink(){
   const c=getGhCfg();
@@ -701,7 +722,8 @@ function setGhStatus(msg,cls){const e=document.getElementById('gh-status');e.tex
 
 /* ════════ GITHUB — file ops ════════ */
 async function ghFetch(path,cfg){
-  const c=getGhCfg(); if(!c.repo||!path)throw new Error('Chưa cấu hình repo/path');
+  const c=getGhCfg(); if(!path)throw new Error('Thiếu đường dẫn file');
+  if(!c.repo)throw new Error('Chưa cấu hình repo (sửa SITE_CONFIG trong file HTML)');
   const url=`https://api.github.com/repos/${c.repo}/contents/${path}?ref=${c.branch||'main'}`;
   const h={'Accept':'application/vnd.github+json'};
   if(c.token)h['Authorization']='Bearer '+c.token;
@@ -851,15 +873,15 @@ async function saveAll(){
 }
 
 async function loadAll(){
-  const cfg=getGhCfg();
-  if(cfg.repo){
-    try{
-      const{data}=await ghFetch(cfg.path||'exams.json');
-      exams=data;
-      try{localStorage.setItem('phanmem_exams',JSON.stringify(exams));}catch(e){}
-      return;
-    }catch(e){}
-  }
+  // SITE_CONFIG.repo is always set, so always try GitHub first (no token needed for reads)
+  try{
+    const cfg=getGhCfg();
+    const{data}=await ghFetch(cfg.path||SITE_CONFIG.examsPath);
+    exams=data;
+    try{localStorage.setItem('phanmem_exams',JSON.stringify(exams));}catch(e){}
+    return;
+  }catch(e){}
+  // Fallback to localStorage cache
   try{const r=localStorage.getItem('phanmem_exams');if(r)exams=JSON.parse(r);}catch(e){exams={};}
 }
 
@@ -875,10 +897,10 @@ async function saveUsersLocal(){
 }
 
 async function loadUsersFromGH(){
-  const cfg=getGhCfg();
-  if(!cfg.repo)return false;
+  // Always try — repo is in SITE_CONFIG, no token needed to read public repo
   try{
-    const{data}=await ghFetch(cfg.usersPath||'users.json');
+    const cfg=getGhCfg();
+    const{data}=await ghFetch(cfg.usersPath||SITE_CONFIG.usersPath);
     users=data;
     try{localStorage.setItem('phanmem_users',JSON.stringify(users));}catch(e){}
     return true;
@@ -1374,11 +1396,12 @@ window.addEventListener('DOMContentLoaded',async()=>{
   loadGhConfig();
   // Show login immediately
   document.getElementById('login-overlay').style.display='flex';
-  // Load users from GitHub (no token needed for public repo read)
-  // fallback to localStorage if GitHub not configured or fails
-  setSyncIndicator('⬇ Đang tải…',null);
+  // Auto-sync from GitHub on every load (SITE_CONFIG provides repo, no token needed)
+  setSyncIndicator('⬇ Đang đồng bộ…',null);
   const fromGH=await loadUsersFromGH();
-  if(!fromGH)loadUsersLocal();
+  if(!fromGH){
+    loadUsersLocal(); // fallback if GitHub unreachable
+  }
   await ensureDefaultAdmin();
   setSyncIndicator('',null);
   // Restore session if valid
@@ -1424,7 +1447,7 @@ window.addEventListener('DOMContentLoaded',async()=>{
 <footer style="background:var(--surface);border-top:1px solid var(--border);padding:16px 28px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;margin-top:40px">
   <div style="display:flex;align-items:center;gap:16px">
     <span style="font-family:var(--font-display);font-size:15px;font-weight:500;color:var(--text)">Phiếu Trả Lời</span>
-    <span style="font-size:12px;color:var(--hint);background:var(--bg);border:1px solid var(--border);padding:2px 9px;border-radius:12px">v2.0.5</span>
+    <span style="font-size:12px;color:var(--hint);background:var(--bg);border:1px solid var(--border);padding:2px 9px;border-radius:12px">v2.0.0</span>
   </div>
   <div style="display:flex;gap:20px;align-items:center">
     <span style="font-size:12px;color:var(--hint)">Hệ thống quản lý &amp; chấm điểm đề thi</span>
