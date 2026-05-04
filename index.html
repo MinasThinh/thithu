@@ -316,10 +316,10 @@ main{max-width:1400px;margin:0 auto;padding:28px 22px 110px}
           <div class="udrop-name" id="udrop-fullname">—</div>
           <div class="udrop-role" id="udrop-role">—</div>
         </div>
-        <button class="udrop-item" onclick="openProfileModal()">👤&nbsp; Thông tin tài khoản</button>
-        <button class="udrop-item" onclick="openSettingsModal()">⚙️&nbsp; Cài đặt giao diện</button>
+        <button class="udrop-item" onclick="event.stopPropagation();openProfileModal()">👤&nbsp; Thông tin tài khoản</button>
+        <button class="udrop-item" onclick="event.stopPropagation();openSettingsModal()">⚙️&nbsp; Cài đặt giao diện</button>
         <div class="udrop-divider"></div>
-        <button class="udrop-item danger" onclick="doLogout()">↩&nbsp; Đăng xuất</button>
+        <button class="udrop-item danger" onclick="event.stopPropagation();doLogout()">↩&nbsp; Đăng xuất</button>
       </div>
     </div>
   </div>
@@ -503,7 +503,7 @@ main{max-width:1400px;margin:0 auto;padding:28px 22px 110px}
 
 <!-- SETTINGS MODAL -->
 <div class="cmodal-bg" id="settings-modal">
-  <div class="modal" style="max-width:520px">
+  <div class="cmodal" style="max-width:520px">
     <p class="cmodal-title">Cài đặt giao diện</p>
     <div class="settings-section">
       <div class="settings-label">Màu nhấn (Accent)</div>
@@ -589,8 +589,8 @@ async function doLogin(){
   loadEl.textContent='Đang kiểm tra...'; loadEl.style.display='block';
   const hash=await sha256(pass);
   // Try GitHub if configured, otherwise use local
-  const c=getGhCfg();
-  if(c.repo&&c.usersPath){await tryLoadUsersFromGH();}
+  // Always try GitHub (token not required for public repos)
+  await loadUsersFromGH();
   loadEl.style.display='none';
   const u=users[uname];
   if(!u){showLoginErr('Tên đăng nhập không tồn tại. (Nếu lần đầu dùng, hãy cấu hình GitHub Sync và thử lại, hoặc đăng ký tài khoản mới.)');return;}
@@ -598,7 +598,7 @@ async function doLogin(){
   if(u.status==='pending'){showLoginErr('Tài khoản đang chờ duyệt.');return;}
   currentUser={username:uname,fullname:u.fullname,role:u.role};
   try{localStorage.setItem('session',JSON.stringify(currentUser));}catch(e){}
-  onLoginSuccess();
+  await onLoginSuccess();
 }
 
 async function doRegister(){
@@ -629,13 +629,16 @@ async function doLogout(){
   location.reload();
 }
 
-function onLoginSuccess(){
+async function onLoginSuccess(){
   document.getElementById('login-overlay').style.display='none';
   applyRoleUI();
-  loadAll();
-  renderExamList();
-  loadGhConfig();
   showToastSuccess('Chào ' + currentUser.fullname + '!');
+  // Always pull fresh data from GitHub after login
+  setSyncIndicator('⬇ Đang tải đề thi…',null);
+  await loadAll();
+  setSyncIndicator('',null);
+  document.getElementById('sync-indicator').style.display='none';
+  renderExamList();
 }
 
 function applyRoleUI(){
@@ -752,11 +755,10 @@ async function ghPullExams(){
   }catch(e){setGhStatus('Lỗi: '+e.message.slice(0,36),'err');showToastErr(e.message.slice(0,80));}
 }
 async function ghPushExams(){
-  clearTimeout(_syncExamsTimer);_syncExamsTimer=null;
   setGhStatus('Đang lưu...','loading');
   try{
-    const c=getGhCfg();
-    await ghPut(c.path||'exams.json',exams,null,`Update exams — ${new Date().toLocaleString('vi-VN')}`);
+    const cfg=getGhCfg();
+    await ghPut(cfg.path||'exams.json',exams,null,`Update exams — ${new Date().toLocaleString('vi-VN')}`);
     setGhStatus('✓ Đã lưu đề thi','ok');showToastSuccess('Đã lưu đề thi lên GitHub!');
   }catch(e){setGhStatus('Lỗi: '+e.message.slice(0,36),'err');showToastErr(e.message.slice(0,80));}
 }
@@ -769,19 +771,14 @@ async function ghPullUsers(){
   }catch(e){showToastErr(e.message.slice(0,80));}
 }
 async function ghPushUsers(){
-  clearTimeout(_syncUsersTimer);_syncUsersTimer=null;
   try{
-    const c=getGhCfg();
-    await ghPut(c.usersPath||'users.json',users,null,`Update users — ${new Date().toLocaleString('vi-VN')}`);
+    const cfg=getGhCfg();
+    await ghPut(cfg.usersPath||'users.json',users,null,`Update users — ${new Date().toLocaleString('vi-VN')}`);
     showToastSuccess('Đã lưu người dùng lên GitHub!');
   }catch(e){showToastErr(e.message.slice(0,80));}
 }
 async function tryLoadUsersFromGH(){
-  try{
-    const c=getGhCfg(); if(!c.repo)return;
-    const{data}=await ghFetch(c.usersPath||'users.json');
-    users=data; saveUsersLocal();
-  }catch(e){/* fall back to local */}
+  await loadUsersFromGH();
 }
 async function tryPushUsers(){
   try{await ghPushUsers();}catch(e){}
@@ -829,49 +826,65 @@ async function deleteUser(uname){
   showToast('Đã xoá tài khoản.');
 }
 
-/* ════════ LOCAL PERSISTENCE ════════ */
-function saveAll(){
-  try{localStorage.setItem('phanmem_exams',JSON.stringify(exams));}catch(e){}
-  scheduleSyncExams();
-}
-function loadAll(){try{const r=localStorage.getItem('phanmem_exams');if(r)exams=JSON.parse(r);}catch(e){exams={};}}
-function saveUsersLocal(){
-  try{localStorage.setItem('phanmem_users',JSON.stringify(users));}catch(e){}
-  scheduleSyncUsers();
-}
+/* ════════ PERSISTENCE — GitHub is source of truth ════════ */
 
-/* ─ Debounced sync ─ */
-let _syncExamsTimer=null, _syncUsersTimer=null;
 function setSyncIndicator(msg,ok){
   const el=document.getElementById('sync-indicator');
-  el.textContent=msg; el.style.display='block';
+  if(!el)return;
+  el.textContent=msg; el.style.display=msg?'block':'none';
   el.style.color=ok===true?'var(--green)':ok===false?'var(--red)':'var(--muted)';
   el.style.borderColor=ok===true?'var(--green-bd)':ok===false?'var(--red-bd)':'var(--border)';
-  if(ok!==null)setTimeout(()=>{el.style.display='none';},3000);
+  if(ok!==null&&msg)setTimeout(()=>{el.style.display='none';},3000);
 }
-function scheduleSyncExams(){
-  const c=getGhCfg(); if(!c.token||!c.repo)return;
-  clearTimeout(_syncExamsTimer);
-  setSyncIndicator('⏳ Chờ lưu…',null);
-  _syncExamsTimer=setTimeout(async()=>{
-    setSyncIndicator('⬆ Đang lưu đề thi…',null);
+
+async function saveAll(){
+  // Cache locally
+  try{localStorage.setItem('phanmem_exams',JSON.stringify(exams));}catch(e){}
+  // Push to GitHub
+  const cfg=getGhCfg();
+  if(!cfg.token||!cfg.repo){setGhStatus('Local only','');return;}
+  setSyncIndicator('⬆ Đang lưu đề thi…',null);
+  try{
+    await ghPut(cfg.path||'exams.json',exams,null,'Save exams '+new Date().toLocaleTimeString('vi-VN'));
+    setSyncIndicator('✓ Đã lưu',true);setGhStatus('✓ Synced','ok');
+  }catch(e){setSyncIndicator('✗ '+e.message.slice(0,36),false);setGhStatus('Lỗi','err');}
+}
+
+async function loadAll(){
+  const cfg=getGhCfg();
+  if(cfg.repo){
     try{
-      await ghPut(c.path||'exams.json',exams,null,`Auto-sync exams ${new Date().toLocaleTimeString('vi-VN')}`);
-      setSyncIndicator('✓ Đề thi đã lưu',true);
-      setGhStatus('✓ Auto-sync','ok');
-    }catch(e){setSyncIndicator('✗ Lỗi lưu: '+e.message.slice(0,30),false);setGhStatus('Lỗi sync','err');}
-  },3000);
+      const{data}=await ghFetch(cfg.path||'exams.json');
+      exams=data;
+      try{localStorage.setItem('phanmem_exams',JSON.stringify(exams));}catch(e){}
+      return;
+    }catch(e){}
+  }
+  try{const r=localStorage.getItem('phanmem_exams');if(r)exams=JSON.parse(r);}catch(e){exams={};}
 }
-function scheduleSyncUsers(){
-  const c=getGhCfg(); if(!c.token||!c.repo)return;
-  clearTimeout(_syncUsersTimer);
-  _syncUsersTimer=setTimeout(async()=>{
-    try{
-      await ghPut(c.usersPath||'users.json',users,null,`Auto-sync users ${new Date().toLocaleTimeString('vi-VN')}`);
-      setSyncIndicator('✓ Người dùng đã lưu',true);
-    }catch(e){setSyncIndicator('✗ Lỗi lưu users',false);}
-  },3000);
+
+async function saveUsersLocal(){
+  try{localStorage.setItem('phanmem_users',JSON.stringify(users));}catch(e){}
+  const cfg=getGhCfg();
+  if(!cfg.token||!cfg.repo)return;
+  setSyncIndicator('⬆ Đang lưu users…',null);
+  try{
+    await ghPut(cfg.usersPath||'users.json',users,null,'Save users '+new Date().toLocaleTimeString('vi-VN'));
+    setSyncIndicator('✓ Users đã lưu',true);
+  }catch(e){setSyncIndicator('✗ Lỗi lưu users',false);}
 }
+
+async function loadUsersFromGH(){
+  const cfg=getGhCfg();
+  if(!cfg.repo)return false;
+  try{
+    const{data}=await ghFetch(cfg.usersPath||'users.json');
+    users=data;
+    try{localStorage.setItem('phanmem_users',JSON.stringify(users));}catch(e){}
+    return true;
+  }catch(e){return false;}
+}
+
 function loadUsersLocal(){
   try{const r=localStorage.getItem('phanmem_users');if(r){users=JSON.parse(r);return;}}catch(e){}
   users={};
@@ -1198,7 +1211,7 @@ document.addEventListener('click',e=>{
 function closeDropdown(){document.getElementById('udrop-menu').classList.remove('open');}
 
 function openProfileModal(){
-  closeDropdown();
+  document.getElementById("udrop-menu").classList.remove("open");
   const u=users[currentUser.username]||{};
   document.getElementById('profile-content').innerHTML=`
     <div style="margin-bottom:14px">
@@ -1255,7 +1268,7 @@ const BG_COLORS=[
 ];
 
 function openSettingsModal(){
-  closeDropdown();
+  document.getElementById("udrop-menu").classList.remove("open");
   // Build accent swatches
   const accentEl=document.getElementById('accent-swatches');
   const curAccent=getComputedStyle(document.documentElement).getPropertyValue('--accent').trim();
@@ -1358,23 +1371,28 @@ function showToastErr(msg){showToast(msg,'danger');}
 /* ════════ INIT ════════ */
 window.addEventListener('DOMContentLoaded',async()=>{
   loadSettings();
-  loadUsersLocal();
+  loadGhConfig();
+  // Show login immediately
+  document.getElementById('login-overlay').style.display='flex';
+  // Load users from GitHub (no token needed for public repo read)
+  // fallback to localStorage if GitHub not configured or fails
+  setSyncIndicator('⬇ Đang tải…',null);
+  const fromGH=await loadUsersFromGH();
+  if(!fromGH)loadUsersLocal();
   await ensureDefaultAdmin();
-  // Try restore session
+  setSyncIndicator('',null);
+  // Restore session if valid
   try{
     const s=JSON.parse(localStorage.getItem('session')||'null');
-    if(s&&s.username&&s.role){
-      // Re-validate session user still exists
-      if(users[s.username]&&users[s.username].status==='active'){
-        currentUser=s;
-        loadAll();renderExamList();loadGhConfig();applyRoleUI();
-        document.getElementById('login-overlay').style.display='none';
-        return;
-      }
+    if(s&&s.username&&users[s.username]&&users[s.username].status==='active'){
+      currentUser=s;
+      setSyncIndicator('⬇ Đang tải đề thi…',null);
+      await loadAll();
+      setSyncIndicator('',null);
+      renderExamList();applyRoleUI();
+      document.getElementById('login-overlay').style.display='none';
     }
   }catch(e){}
-  // No session — show login
-  document.getElementById('login-overlay').style.display='flex';
 });
 </script>
 <!-- BS TOAST CONTAINER -->
@@ -1406,7 +1424,7 @@ window.addEventListener('DOMContentLoaded',async()=>{
 <footer style="background:var(--surface);border-top:1px solid var(--border);padding:16px 28px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;margin-top:40px">
   <div style="display:flex;align-items:center;gap:16px">
     <span style="font-family:var(--font-display);font-size:15px;font-weight:500;color:var(--text)">Phiếu Trả Lời</span>
-    <span style="font-size:12px;color:var(--hint);background:var(--bg);border:1px solid var(--border);padding:2px 9px;border-radius:12px">v2.0.4</span>
+    <span style="font-size:12px;color:var(--hint);background:var(--bg);border:1px solid var(--border);padding:2px 9px;border-radius:12px">v2.0.5</span>
   </div>
   <div style="display:flex;gap:20px;align-items:center">
     <span style="font-size:12px;color:var(--hint)">Hệ thống quản lý &amp; chấm điểm đề thi</span>
